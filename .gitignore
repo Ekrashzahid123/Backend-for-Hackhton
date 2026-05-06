@@ -1,4 +1,5 @@
-mock_data.json
+chroma_db/
 exam_generator.db
 __pycache__/
 *.pyc
+.env
