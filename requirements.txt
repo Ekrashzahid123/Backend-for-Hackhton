@@ -8,3 +8,8 @@ langdetect
 scikit-learn
 nltk
 sqlalchemy
+chromadb
+mistralai
+python-docx
+sentence-transformers
+python-dotenv
