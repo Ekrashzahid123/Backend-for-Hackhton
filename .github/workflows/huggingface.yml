@@ -21,4 +21,9 @@ jobs:
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          git push https://Ekrash1234:$HF_TOKEN@huggingface.co/spaces/Ekrash1234/github_deploy_token main -f
+          git config --global user.email "sync-bot@example.com"
+          git config --global user.name "Sync Bot"
+          git checkout --orphan deploy-branch
+          git add .
+          git commit -m "Deploy to Hugging Face"
+          git push https://Ekrash1234:${{ secrets.HF_TOKEN }}@huggingface.co/spaces/Ekrash1234/github_deploy_token deploy-branch:main -f
