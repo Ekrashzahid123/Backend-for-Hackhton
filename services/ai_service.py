@@ -13,7 +13,10 @@ import json
 import re
 from typing import List, Dict, Any
 
-from mistralai import Mistral
+try:
+    from mistralai.client import Mistral
+except ImportError:
+    from mistralai import Mistral
 from dotenv import load_dotenv
 
 load_dotenv()
