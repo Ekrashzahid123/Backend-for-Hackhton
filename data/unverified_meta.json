@@ -1,0 +1,20 @@
+[
+  {
+    "country": "Pakistan",
+    "class_name": "Class 10",
+    "subject": "Physics",
+    "score": 2.0
+  },
+  {
+    "country": "UK",
+    "class_name": "O Level",
+    "subject": "Biology",
+    "score": 2.0
+  },
+  {
+    "country": "USA",
+    "class_name": "A Level",
+    "subject": "Chemistry",
+    "score": 2.0
+  }
+]
