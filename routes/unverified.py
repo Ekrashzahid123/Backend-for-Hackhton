@@ -261,6 +261,9 @@ async def generate_paper(req: UnverifiedPaperRequest):
         paper_style="general",
     )
 
+    if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):
+        raise HTTPException(status_code=404, detail="No data available for this query.")
+
     return UnverifiedPaperResponse(
         mcqs=[_parse_mcq(m, i) for i, m in enumerate(raw.get("mcqs", []))],
         short_questions=[_parse_short(q, i) for i, q in enumerate(raw.get("short_questions", []))],

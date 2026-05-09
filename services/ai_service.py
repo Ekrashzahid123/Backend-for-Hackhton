@@ -70,13 +70,17 @@ def generate_quiz(query: str, retrieved_chunks: List[Dict]) -> List[Dict]:
 
     context = "\n\n".join([c["text"] for c in retrieved_chunks[:15]])
 
-    prompt = f"""You are an expert exam paper creator. Based on the following educational content, 
-generate multiple choice questions related to this topic: "{query}"
+    prompt = f"""You are an expert exam paper creator. 
+
+TASK: Based on the following educational content, generate multiple choice questions related to the topic: "{query}"
 
 EDUCATIONAL CONTENT:
 {context}
 
-Generate exactly 10 MCQs. Return ONLY a valid JSON array with this exact structure:
+RELEVANCE RULE: 
+If the topic "{query}" is NOT related to education, or if it's a general greeting/conversation (like "how are you", "hello", etc.) that cannot be answered using the educational content, return an empty JSON array [].
+
+If relevant, generate exactly 10 MCQs. Return ONLY a valid JSON array with this exact structure:
 [
   {{
     "id": 1,
@@ -157,12 +161,15 @@ def generate_paper_sections(
 
     prompt = f"""You are an expert exam paper setter. {style_note}
 
-Based on the educational content below, create an exam paper for the topic: "{query}"
+TASK: Based on the educational content below, create an exam paper for the topic: "{query}"
 
 EDUCATIONAL CONTENT:
 {context}
 
-Generate:
+RELEVANCE RULE:
+If the topic "{query}" is NOT related to education, or if it's a general greeting/conversation (like "how are you", "hello", etc.) that cannot be answered using the educational content, return an empty JSON object: {{"mcqs": [], "short_questions": [], "long_questions": []}}.
+
+Otherwise, generate:
 - {num_mcqs} MCQs (with 4 options A/B/C/D and correct answer)
 - {num_short} short questions (1-2 sentences, 2-4 marks each)
 - {num_long} long questions (detailed, 8-15 marks each)

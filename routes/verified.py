@@ -88,6 +88,8 @@ async def generate_quiz(req: VerifiedQuizRequest):
 
     # 2. AI generation
     raw_mcqs: List[dict] = ai_service.generate_quiz(req.query, chunks)
+    if not raw_mcqs:
+        raise HTTPException(status_code=404, detail="No data available for this query.")
 
     # 3. Parse & validate
     try:
@@ -138,6 +140,9 @@ async def generate_paper_cambridge(req: VerifiedPaperRequest):
         paper_style="cambridge",
     )
 
+    if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):
+        raise HTTPException(status_code=404, detail="No data available for this query.")
+
     return VerifiedPaperResponse(
         mcqs=[_parse_mcq(m, i) for i, m in enumerate(raw.get("mcqs", []))],
         short_questions=[_parse_short(q, i) for i, q in enumerate(raw.get("short_questions", []))],
@@ -183,6 +188,9 @@ async def generate_paper_boards(req: VerifiedPaperRequest):
         num_long=req.long_questions,
         paper_style="boards",
     )
+
+    if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):
+        raise HTTPException(status_code=404, detail="No data available for this query.")
 
     return VerifiedPaperResponse(
         mcqs=[_parse_mcq(m, i) for i, m in enumerate(raw.get("mcqs", []))],
