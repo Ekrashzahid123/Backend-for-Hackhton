@@ -1,560 +1,452 @@
 [
   {
-    "country": "Pakistan",
-    "class_name": "Class 10",
+    "country": "UK",
+    "category": "Board Exam",
+    "class_name": "O Level",
     "subject": "Physics",
-    "score": 2.0
+    "score": 75.0,
+    "filename": "uk_board_olevel_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.698182"
   },
   {
     "country": "UK",
+    "category": "Board Exam",
+    "class_name": "A Level",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "uk_board_alevel_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.698748"
+  },
+  {
+    "country": "UK",
+    "category": "Board Exam",
+    "class_name": "A Level",
+    "subject": "Biology",
+    "score": 75.0,
+    "filename": "uk_board_alevel_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.698748"
+  },
+  {
+    "country": "UK",
+    "category": "Board Exam",
+    "class_name": "O Level",
+    "subject": "Mathematics",
+    "score": 75.0,
+    "filename": "uk_board_olevel_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.699291"
+  },
+  {
+    "country": "UK",
+    "category": "Mid Term",
+    "class_name": "A Level",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "uk_mid_alevel_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.699836"
+  },
+  {
+    "country": "UK",
+    "category": "Mid Term",
     "class_name": "O Level",
     "subject": "Biology",
-    "score": 2.0
+    "score": 75.0,
+    "filename": "uk_mid_olevel_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.699836"
+  },
+  {
+    "country": "UK",
+    "category": "Final Term",
+    "class_name": "A Level",
+    "subject": "Mathematics",
+    "score": 75.0,
+    "filename": "uk_final_alevel_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.700387"
+  },
+  {
+    "country": "UK",
+    "category": "Final Term",
+    "class_name": "O Level",
+    "subject": "Computer Science",
+    "score": 75.0,
+    "filename": "uk_final_olevel_cs_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.700929"
+  },
+  {
+    "country": "UK",
+    "category": "Quiz",
+    "class_name": "A Level",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "uk_quiz_alevel_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.700929"
+  },
+  {
+    "country": "UK",
+    "category": "Quiz",
+    "class_name": "O Level",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "uk_quiz_olevel_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.701472"
   },
   {
     "country": "USA",
-    "class_name": "A Level",
-    "subject": "Chemistry",
-    "score": 2.0
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "category": "Board Exam",
+    "class_name": "Grade 11",
     "subject": "Physics",
     "score": 75.0,
-    "filename": "upk_punjab_c9_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.504657"
+    "filename": "usa_board_g11_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.702017"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "USA",
+    "category": "Board Exam",
+    "class_name": "Grade 12",
     "subject": "Chemistry",
     "score": 75.0,
-    "filename": "upk_punjab_c9_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.505661"
+    "filename": "usa_board_g12_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.702017"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "USA",
+    "category": "Board Exam",
+    "class_name": "Grade 10",
     "subject": "Biology",
     "score": 75.0,
-    "filename": "upk_punjab_c9_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.505661"
+    "filename": "usa_board_g10_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.702562"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "USA",
+    "category": "Board Exam",
+    "class_name": "Grade 12",
     "subject": "Mathematics",
     "score": 75.0,
-    "filename": "upk_punjab_c9_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.506655"
+    "filename": "usa_board_g12_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.703076"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "USA",
+    "category": "Mid Term",
+    "class_name": "Grade 11",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "usa_mid_g11_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.703625"
+  },
+  {
+    "country": "USA",
+    "category": "Mid Term",
+    "class_name": "Grade 10",
+    "subject": "Mathematics",
+    "score": 75.0,
+    "filename": "usa_mid_g10_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.704177"
+  },
+  {
+    "country": "USA",
+    "category": "Final Term",
+    "class_name": "Grade 12",
     "subject": "Computer Science",
     "score": 75.0,
-    "filename": "upk_punjab_c9_cs_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.506655"
+    "filename": "usa_final_g12_cs_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.704684"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
+    "country": "USA",
+    "category": "Final Term",
+    "class_name": "Grade 11",
+    "subject": "Biology",
+    "score": 75.0,
+    "filename": "usa_final_g11_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.705239"
+  },
+  {
+    "country": "USA",
+    "category": "Quiz",
+    "class_name": "Grade 11",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "usa_quiz_g11_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.705746"
+  },
+  {
+    "country": "USA",
+    "category": "Quiz",
+    "class_name": "Grade 10",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "usa_quiz_g10_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.706294"
+  },
+  {
+    "country": "India",
+    "category": "Board Exam",
     "class_name": "Class 10",
     "subject": "Physics",
     "score": 75.0,
-    "filename": "upk_punjab_c10_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.507653"
+    "filename": "india_board_c10_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.706797"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
+    "country": "India",
+    "category": "Board Exam",
+    "class_name": "Class 12",
     "subject": "Chemistry",
     "score": 75.0,
-    "filename": "upk_punjab_c10_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.507653"
+    "filename": "india_board_c12_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.707357"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
+    "country": "India",
+    "category": "Board Exam",
+    "class_name": "Class 11",
+    "subject": "Mathematics",
+    "score": 75.0,
+    "filename": "india_board_c11_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.707900"
+  },
+  {
+    "country": "India",
+    "category": "Board Exam",
+    "class_name": "Class 12",
     "subject": "Biology",
     "score": 75.0,
-    "filename": "upk_punjab_c10_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.507653"
+    "filename": "india_board_c12_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.707900"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
+    "country": "India",
+    "category": "Mid Term",
     "class_name": "Class 10",
     "subject": "Mathematics",
     "score": 75.0,
-    "filename": "upk_punjab_c10_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.508650"
+    "filename": "india_mid_c10_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.708899"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
+    "country": "India",
+    "category": "Mid Term",
+    "class_name": "Class 11",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "india_mid_c11_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.710584"
+  },
+  {
+    "country": "India",
+    "category": "Final Term",
+    "class_name": "Class 12",
     "subject": "Computer Science",
     "score": 75.0,
-    "filename": "upk_punjab_c10_cs_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.508650"
+    "filename": "india_final_c12_cs_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.710584"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_punjab_c11_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.509647"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_punjab_c11_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.509647"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_punjab_c11_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.510643"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_punjab_c11_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.510643"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.511640"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.511640"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.512639"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.512639"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.513636"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.513636"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.514641"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.514641"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.515657"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.515657"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.516628"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.517625"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Federal Board",
-    "class_name": "Class 9",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_fbise_c9_phy_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.517625"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Federal Board",
+    "country": "India",
+    "category": "Final Term",
     "class_name": "Class 10",
     "subject": "Biology",
     "score": 75.0,
-    "filename": "upk_fbise_c10_bio_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.518622"
+    "filename": "india_final_c10_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.711583"
   },
   {
-    "country": "Pakistan",
-    "category": "Federal Board",
+    "country": "India",
+    "category": "Quiz",
     "class_name": "Class 11",
     "subject": "Chemistry",
     "score": 75.0,
-    "filename": "upk_fbise_c11_chem_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.519694"
+    "filename": "india_quiz_c11_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.711583"
   },
   {
-    "country": "Pakistan",
-    "category": "Federal Board",
+    "country": "India",
+    "category": "Quiz",
     "class_name": "Class 12",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_fbise_c12_math_01.pdf",
-    "timestamp": "2026-07-18T12:45:17.520199"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
     "subject": "Physics",
     "score": 75.0,
-    "filename": "upk_punjab_c9_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.525463"
+    "filename": "india_quiz_c12_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.712580"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "Australia",
+    "category": "Board Exam",
+    "class_name": "Year 12",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "aus_board_y12_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.713578"
+  },
+  {
+    "country": "Australia",
+    "category": "Board Exam",
+    "class_name": "Year 11",
     "subject": "Chemistry",
     "score": 75.0,
-    "filename": "upk_punjab_c9_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.527457"
+    "filename": "aus_board_y11_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.713578"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_punjab_c9_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.528455"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "Australia",
+    "category": "Board Exam",
+    "class_name": "Year 10",
     "subject": "Mathematics",
     "score": 75.0,
-    "filename": "upk_punjab_c9_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.530450"
+    "filename": "aus_board_y10_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.714589"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 9",
+    "country": "Australia",
+    "category": "Board Exam",
+    "class_name": "Year 12",
+    "subject": "Biology",
+    "score": 75.0,
+    "filename": "aus_board_y12_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.715572"
+  },
+  {
+    "country": "Australia",
+    "category": "Mid Term",
+    "class_name": "Year 12",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "aus_mid_y12_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.715572"
+  },
+  {
+    "country": "Australia",
+    "category": "Mid Term",
+    "class_name": "Year 11",
+    "subject": "Mathematics",
+    "score": 75.0,
+    "filename": "aus_mid_y11_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.716570"
+  },
+  {
+    "country": "Australia",
+    "category": "Final Term",
+    "class_name": "Year 12",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "aus_final_y12_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.717567"
+  },
+  {
+    "country": "Australia",
+    "category": "Final Term",
+    "class_name": "Year 10",
+    "subject": "Biology",
+    "score": 75.0,
+    "filename": "aus_final_y10_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.718564"
+  },
+  {
+    "country": "Australia",
+    "category": "Quiz",
+    "class_name": "Year 12",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "aus_quiz_y12_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.719562"
+  },
+  {
+    "country": "Australia",
+    "category": "Quiz",
+    "class_name": "Year 11",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "aus_quiz_y11_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.720560"
+  },
+  {
+    "country": "Canada",
+    "category": "Board Exam",
+    "class_name": "Grade 12",
+    "subject": "Physics",
+    "score": 75.0,
+    "filename": "can_board_g12_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.720560"
+  },
+  {
+    "country": "Canada",
+    "category": "Board Exam",
+    "class_name": "Grade 11",
+    "subject": "Chemistry",
+    "score": 75.0,
+    "filename": "can_board_g11_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.721556"
+  },
+  {
+    "country": "Canada",
+    "category": "Board Exam",
+    "class_name": "Grade 10",
+    "subject": "Biology",
+    "score": 75.0,
+    "filename": "can_board_g10_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.722554"
+  },
+  {
+    "country": "Canada",
+    "category": "Board Exam",
+    "class_name": "Grade 12",
+    "subject": "Mathematics",
+    "score": 75.0,
+    "filename": "can_board_g12_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.723551"
+  },
+  {
+    "country": "Canada",
+    "category": "Mid Term",
+    "class_name": "Grade 12",
     "subject": "Computer Science",
     "score": 75.0,
-    "filename": "upk_punjab_c9_cs_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.531448"
+    "filename": "can_mid_g12_cs_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.724548"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
+    "country": "Canada",
+    "category": "Mid Term",
+    "class_name": "Grade 11",
     "subject": "Physics",
     "score": 75.0,
-    "filename": "upk_punjab_c10_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.533444"
+    "filename": "can_mid_g11_phy_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.725546"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_punjab_c10_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.534439"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
+    "country": "Canada",
+    "category": "Final Term",
+    "class_name": "Grade 11",
     "subject": "Biology",
     "score": 75.0,
-    "filename": "upk_punjab_c10_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.536433"
+    "filename": "can_final_g11_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.727541"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_punjab_c10_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.537431"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 10",
-    "subject": "Computer Science",
-    "score": 75.0,
-    "filename": "upk_punjab_c10_cs_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.538428"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_punjab_c11_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.539426"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
+    "country": "Canada",
+    "category": "Final Term",
+    "class_name": "Grade 10",
     "subject": "Chemistry",
     "score": 75.0,
-    "filename": "upk_punjab_c11_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.540423"
+    "filename": "can_final_g10_chem_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.728544"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_punjab_c11_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.542417"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 11",
+    "country": "Canada",
+    "category": "Quiz",
+    "class_name": "Grade 12",
     "subject": "Mathematics",
     "score": 75.0,
-    "filename": "upk_punjab_c11_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.543414"
+    "filename": "can_quiz_g12_math_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.729535"
   },
   {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.545409"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.546406"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
+    "country": "Canada",
+    "category": "Quiz",
+    "class_name": "Grade 11",
     "subject": "Biology",
     "score": 75.0,
-    "filename": "upk_punjab_c12_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.548402"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Punjab Boards",
-    "class_name": "Class 12",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_punjab_c12_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.549398"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.552395"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.555383"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.557378"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "O Level",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_cam_olevel_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.557987"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.558988"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.560983"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.561980"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Cambridge",
-    "class_name": "A Level",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_cam_alevel_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.563976"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Federal Board",
-    "class_name": "Class 9",
-    "subject": "Physics",
-    "score": 75.0,
-    "filename": "upk_fbise_c9_phy_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.566968"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Federal Board",
-    "class_name": "Class 10",
-    "subject": "Biology",
-    "score": 75.0,
-    "filename": "upk_fbise_c10_bio_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.568961"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Federal Board",
-    "class_name": "Class 11",
-    "subject": "Chemistry",
-    "score": 75.0,
-    "filename": "upk_fbise_c11_chem_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.570957"
-  },
-  {
-    "country": "Pakistan",
-    "category": "Federal Board",
-    "class_name": "Class 12",
-    "subject": "Mathematics",
-    "score": 75.0,
-    "filename": "upk_fbise_c12_math_01.pdf",
-    "timestamp": "2026-07-18T12:47:28.572950"
+    "filename": "can_quiz_g11_bio_01.pdf",
+    "timestamp": "2026-07-18T14:42:20.729535"
   }
 ]

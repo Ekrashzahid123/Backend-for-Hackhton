@@ -1120,8 +1120,20 @@ def _seed_inline_papers(documents, metadatas):
                 metadatas.append({**base_meta, "question_type": "long"})
 
 
+# Only these categories belong in the Verified (Pakistan boards) DB.
+_VERIFIED_ALLOWED_CATEGORIES = {"Punjab Boards", "Cambridge", "Federal Board"}
+
+
 def _seed_from_mock_data(documents, metadatas):
-    """Load questions from mock_data.json and append to lists."""
+    """
+    Load questions from mock_data.json and append to lists.
+
+    Only Pakistan entries with a recognised board category
+    (Punjab Boards, Cambridge, Federal Board) are included.
+    All other countries and exam-type categories (Mid Term, Final Term,
+    Quiz, Board Exam) are silently skipped — they belong in the
+    Unverified DB.
+    """
     if not os.path.exists(_DATA_PATH):
         return
     try:
@@ -1132,11 +1144,18 @@ def _seed_from_mock_data(documents, metadatas):
         return
 
     entries = data if isinstance(data, list) else data.get("papers", [data])
+    skipped = 0
     for paper in entries:
+        country  = str(paper.get("country",  "General"))
+        category = str(paper.get("category", paper.get("exam_type", "General")))
+
+        # ── FILTER: Verified DB = Pakistan boards only ─────────────────────
+        if country != "Pakistan" or category not in _VERIFIED_ALLOWED_CATEGORIES:
+            skipped += 1
+            continue
+
         subject    = str(paper.get("subject",    "General"))
         class_name = str(paper.get("class",      paper.get("class_name", paper.get("exam_type", "General"))))
-        country    = str(paper.get("country",    "General"))
-        category   = str(paper.get("category",   paper.get("exam_type",  "General")))
 
         base_meta = {
             "country":    country,
@@ -1167,11 +1186,15 @@ def _seed_from_mock_data(documents, metadatas):
                 documents.append(text.strip())
                 metadatas.append({**base_meta, "question_type": "long"})
 
+    if skipped:
+        print(f"[Seed] mock_data.json: skipped {skipped} non-Pakistan / non-board-exam entries.")
+
 
 def seed_verified_store() -> None:
     """
     Load all questions into the verified ChromaDB collection.
-    Sources: SEED_PAPERS (inline) + mock_data.json (legacy).
+    Sources: SEED_PAPERS (inline) + mock_data.json (Pakistan boards only).
+    Non-Pakistan and non-board-exam entries in mock_data.json are skipped.
     Idempotent — skips if collection already populated.
     """
     from services.vector_store import verified_col, add_to_verified

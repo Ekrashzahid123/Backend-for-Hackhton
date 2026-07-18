@@ -1,12 +1,20 @@
 """
-Seed the Unverified ChromaDB collection with seed exam papers.
+Seed the Unverified ChromaDB collection with international sample exam papers.
 
-Coverage: same classes as verified — 9, 10, 11, 12, O Level, A Level
-Boards   : Punjab Boards, Federal Board, Cambridge
-Subjects : Mathematics, Physics, Chemistry, Biology, Computer Science, English
+Coverage:
+  UK         > Board Exam, Mid Term, Final Term, Quiz  > O Level, A Level
+  USA        > Board Exam, Mid Term, Final Term, Quiz  > Grade 9-12
+  India      > Board Exam, Mid Term, Final Term, Quiz  > Class 9-12
+  Australia  > Board Exam, Mid Term, Final Term, Quiz  > Year 10-12
+  Canada     > Board Exam, Mid Term, Final Term, Quiz  > Grade 10-12
+
+Subjects: Mathematics, Physics, Chemistry, Biology, Computer Science, English
 
 Papers are stored DIRECTLY in the Unverified Vector DB
 (no file system storage required).
+
+IMPORTANT: Pakistan boards (Punjab Boards, Cambridge, Federal Board) belong
+ONLY in the Verified DB and must NOT appear here.
 
 Run automatically on startup or manually:
     python -m services.seed_unverified_store
@@ -21,476 +29,942 @@ _TIMESTAMP = datetime.datetime.utcnow().isoformat()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# Seed papers — separate from verified content to maintain uniqueness
+# Seed papers — international boards only
+# Countries: UK, USA, India, Australia, Canada
+# Categories: Board Exam, Mid Term, Final Term, Quiz
 # ═══════════════════════════════════════════════════════════════════════════════
 
 UNVERIFIED_SEED_PAPERS: List[Dict] = [
 
-    # ── Pakistan > Punjab Boards > Class 9 ───────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════════
+    # UK — Board Exam
+    # ══════════════════════════════════════════════════════════════════════════
+
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 9", "subject": "Physics", "paper_id": "upk_punjab_c9_phy_01",
+        "country": "UK", "category": "Board Exam", "class_name": "O Level", "subject": "Physics",
+        "paper_id": "uk_board_olevel_phy_01",
         "mcqs": [
-            "Torque is defined as the product of force and: A) Distance  B) Perpendicular distance  C) Velocity  D) Acceleration",
-            "A body thrown horizontally from a height follows a: A) Parabolic path  B) Circular path  C) Straight path  D) Elliptical path",
-            "The weight of an object on the Moon is approximately: A) 1/6 of its weight on Earth  B) Same as on Earth  C) Double of its weight on Earth  D) Zero",
+            "Which quantity is a vector? A) Speed  B) Mass  C) Velocity  D) Temperature",
+            "The unit of electrical resistance is: A) Ohm  B) Ampere  C) Volt  D) Watt",
+            "Light travels fastest in: A) Vacuum  B) Water  C) Glass  D) Air",
+            "Which type of wave requires a medium to travel? A) Sound  B) Light  C) X-rays  D) Radio waves",
         ],
         "short_questions": [
-            "Define torque and its unit. How does it differ from work?",
-            "A stone is thrown horizontally at 20 m/s from a cliff 45 m high. Calculate the time to reach the ground.",
-            "Explain how the weight of a body changes with altitude.",
+            "State Ohm's Law. Under what conditions does a conductor obey Ohm's Law?",
+            "Explain the difference between series and parallel circuits. Give one advantage of each.",
+            "Define work done. When is work done zero even if force is applied?",
         ],
         "long_questions": [
-            "Derive the formula for maximum height and time of flight for a projectile launched at angle θ. Calculate the range for θ = 45°.",
+            "Describe the photoelectric effect. What evidence does it provide for the particle nature of light? Explain Einstein's photoelectric equation.",
+            "Explain how a transformer works. Derive the turns ratio equation. Distinguish between step-up and step-down transformers.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 9", "subject": "Chemistry", "paper_id": "upk_punjab_c9_chem_01",
+        "country": "UK", "category": "Board Exam", "class_name": "A Level", "subject": "Chemistry",
+        "paper_id": "uk_board_alevel_chem_01",
         "mcqs": [
-            "The number of moles in 22 g of CO₂ is: A) 0.5  B) 1.0  C) 1.5  D) 2.0",
-            "Which of the following is a physical change? A) Melting of ice  B) Rusting of iron  C) Burning wood  D) Souring of milk",
-            "A solution with pH = 3 is: A) Strongly acidic  B) Weakly acidic  C) Neutral  D) Basic",
+            "Which of the following is a nucleophile? A) NH₃  B) BF₃  C) AlCl₃  D) H⁺",
+            "The IUPAC name of CH₃CHO is: A) Ethanal  B) Ethanol  C) Ethanoic acid  D) Methanol",
+            "The rate-determining step is: A) The slowest step  B) The first step  C) The last step  D) The fastest step",
         ],
         "short_questions": [
-            "Calculate the number of molecules in 18 g of water.",
-            "Differentiate between a solution and a suspension with examples.",
-            "What is the effect of catalyst on activation energy?",
+            "Explain the mechanism of nucleophilic addition to carbonyl compounds. Give one example.",
+            "Define buffer solution. Calculate the pH of a buffer made from 0.2 M CH₃COOH and 0.2 M CH₃COONa (Ka = 1.8×10⁻⁵).",
+            "What is enthalpy of neutralization? Why is it approximately constant for strong acid-base reactions?",
         ],
         "long_questions": [
-            "Explain the factors affecting rate of reaction: concentration, temperature, particle size, and catalysts. Use collision theory to explain each.",
+            "Describe the mechanism of electrophilic aromatic substitution. Explain nitration and halogenation of benzene with reaction conditions.",
+            "Explain reaction kinetics. Define rate constant, activation energy, and Arrhenius equation. How does temperature affect reaction rate?",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 9", "subject": "Biology", "paper_id": "upk_punjab_c9_bio_01",
+        "country": "UK", "category": "Board Exam", "class_name": "A Level", "subject": "Biology",
+        "paper_id": "uk_board_alevel_bio_01",
         "mcqs": [
-            "Which organelle is responsible for the synthesis of lipids? A) Smooth ER  B) Rough ER  C) Golgi apparatus  D) Nucleus",
-            "The process by which white blood cells engulf bacteria is called: A) Phagocytosis  B) Pinocytosis  C) Exocytosis  D) Endocytosis",
-            "Root pressure is caused by: A) Active transport of ions into roots  B) Transpiration  C) Photosynthesis  D) Respiration",
+            "The site of oxidative phosphorylation is: A) Inner mitochondrial membrane  B) Cytoplasm  C) Nucleus  D) Ribosome",
+            "Which molecule carries amino acids to the ribosome during translation? A) tRNA  B) mRNA  C) rRNA  D) DNA",
+            "Hardy-Weinberg equilibrium requires: A) No mutation, migration, or selection  B) Small population  C) Random genetic drift  D) Natural selection",
         ],
         "short_questions": [
-            "Differentiate between endocytosis and exocytosis.",
-            "What is turgor pressure? Explain its importance in plant support.",
-            "Describe the role of the Golgi apparatus.",
+            "Describe the structure and function of the nephron. How is urine concentrated?",
+            "Explain gene expression regulation in eukaryotes. What is the role of transcription factors?",
+            "Define population genetics. What are the assumptions of the Hardy-Weinberg principle?",
         ],
         "long_questions": [
-            "Explain the transport of water and minerals in plants. Describe the role of xylem and phloem. Explain the transpiration pull mechanism.",
+            "Describe the electron transport chain and chemiosmosis. How is ATP synthesized during aerobic respiration?",
+            "Explain the immune system: innate vs. adaptive immunity, role of B and T cells, and the mechanism of vaccination.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 9", "subject": "Mathematics", "paper_id": "upk_punjab_c9_math_01",
+        "country": "UK", "category": "Board Exam", "class_name": "O Level", "subject": "Mathematics",
+        "paper_id": "uk_board_olevel_math_01",
         "mcqs": [
-            "If A ∩ B = ∅, the sets A and B are called: A) Disjoint  B) Equal  C) Equivalent  D) Subsets",
-            "The midpoint formula between (x₁,y₁) and (x₂,y₂) is: A) ((x₁+x₂)/2, (y₁+y₂)/2)  B) (x₁-x₂, y₁-y₂)  C) (x₁x₂, y₁y₂)  D) (x₁/x₂, y₁/y₂)",
-            "If an angle in a semicircle is inscribed, it measures: A) 90°  B) 45°  C) 180°  D) 60°",
+            "The sum of interior angles of a hexagon is: A) 720°  B) 360°  C) 540°  D) 900°",
+            "If f(x) = 2x + 3, then f⁻¹(x) = : A) (x-3)/2  B) (x+3)/2  C) 2x-3  D) x/2",
+            "The HCF of 24 and 36 is: A) 12  B) 6  C) 8  D) 4",
         ],
         "short_questions": [
-            "Find the midpoint and length of the segment joining A(-2, 3) and B(4, -1).",
-            "Solve: √(2x-1) = 3.",
-            "Factorize: a⁴ - b⁴.",
+            "Solve the quadratic equation x² - 7x + 12 = 0 by factorisation.",
+            "A rectangle has length (2x+3) cm and width (x-1) cm. Write an expression for the area. If area = 18 cm², find x.",
+            "Calculate the nth term and the 20th term of the sequence: 3, 7, 11, 15, ...",
         ],
         "long_questions": [
-            "Prove that the angle subtended by an arc at the centre is double the angle at the circumference.",
+            "Prove that the angle in a semicircle is 90°. Apply this to solve: Given a circle with diameter AB, C is a point on the circle. Find ∠ACB.",
+            "Describe and apply trigonometry: In a triangle ABC, AB = 8 cm, BC = 6 cm, ∠B = 90°. Find AC, sin A, and cos A.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # UK — Mid Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "UK", "category": "Mid Term", "class_name": "A Level", "subject": "Physics",
+        "paper_id": "uk_mid_alevel_phy_01",
+        "mcqs": [
+            "The dimension of electric field intensity is: A) MLT⁻³A⁻¹  B) MLT⁻²A⁻¹  C) ML²T⁻²A  D) MT⁻¹A",
+            "At which point in SHM is kinetic energy maximum? A) Mean position  B) Extreme position  C) Midway  D) At equilibrium always",
+        ],
+        "short_questions": [
+            "Derive the expression for the energy stored in a capacitor.",
+            "Explain what is meant by the work function of a metal.",
+        ],
+        "long_questions": [
+            "Explain Faraday's laws of electromagnetic induction. Describe Lenz's law and its significance for energy conservation.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 9", "subject": "Computer Science", "paper_id": "upk_punjab_c9_cs_01",
+        "country": "UK", "category": "Mid Term", "class_name": "O Level", "subject": "Biology",
+        "paper_id": "uk_mid_olevel_bio_01",
         "mcqs": [
-            "Which of the following converts high-level language to machine code line by line? A) Interpreter  B) Compiler  C) Assembler  D) Linker",
-            "The hexadecimal equivalent of decimal 255 is: A) FF  B) EE  C) AB  D) F0",
+            "Which organ produces bile? A) Liver  B) Pancreas  C) Stomach  D) Small intestine",
+            "Anaerobic respiration in yeast produces: A) Ethanol and CO₂  B) Lactic acid  C) Water and CO₂  D) ATP only",
         ],
         "short_questions": [
-            "Write an algorithm to find whether a number is prime.",
-            "Explain the difference between SRAM and DRAM.",
+            "Explain the process of osmosis. How does it affect plant cells in different solutions?",
+            "Describe the function of the alveoli in gas exchange.",
         ],
         "long_questions": [
-            "Describe input and output devices in detail. Explain the working of a laser printer and a scanner.",
+            "Describe how the human heart pumps blood. Explain the cardiac cycle including systole and diastole.",
         ],
     },
 
-    # ── Pakistan > Punjab Boards > Class 10 ──────────────────────────────────
-    {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 10", "subject": "Physics", "paper_id": "upk_punjab_c10_phy_01",
-        "mcqs": [
-            "The force between two parallel conductors carrying current in the same direction is: A) Attractive  B) Repulsive  C) Zero  D) Perpendicular",
-            "The frequency of AC mains supply in Pakistan is: A) 50 Hz  B) 60 Hz  C) 100 Hz  D) 25 Hz",
-            "A positive lens has: A) Converging power  B) Diverging power  C) Zero power  D) Infinite power",
-        ],
-        "short_questions": [
-            "What is magnetic flux? Write its unit and formula.",
-            "Explain Lenz's Law with an example.",
-            "Define refractive index. How does it relate to the speed of light?",
-        ],
-        "long_questions": [
-            "Describe the construction and working of an AC generator. Explain how EMF varies with time and draw the output waveform.",
-        ],
-    },
+    # ══════════════════════════════════════════════════════════════════════════
+    # UK — Final Term
+    # ══════════════════════════════════════════════════════════════════════════
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 10", "subject": "Chemistry", "paper_id": "upk_punjab_c10_chem_01",
+        "country": "UK", "category": "Final Term", "class_name": "A Level", "subject": "Mathematics",
+        "paper_id": "uk_final_alevel_math_01",
         "mcqs": [
-            "What is the IUPAC name of CH₃CH₂OH? A) Ethanol  B) Methanol  C) Propanol  D) Butanol",
-            "The reaction between an acid and a base is called: A) Neutralization  B) Precipitation  C) Combustion  D) Decomposition",
+            "The derivative of tan x is: A) sec²x  B) cosec²x  C) -sec²x  D) sin x",
+            "The integral of 1/(1+x²) is: A) arctan x + C  B) arcsin x + C  C) ln(1+x²) + C  D) -arctan x + C",
         ],
         "short_questions": [
-            "What is the difference between a strong acid and a weak acid? Give examples.",
-            "Explain saponification and write its equation.",
+            "Find the stationary points of f(x) = x³ - 3x² - 9x + 5 and classify them.",
+            "Use integration by parts to evaluate ∫ x cos x dx.",
         ],
         "long_questions": [
-            "Describe the chemistry of soaps and detergents. How do they remove grease? Compare their effectiveness in hard water.",
+            "Explain the Fundamental Theorem of Calculus. Evaluate ∫₀π sin x dx and interpret geometrically.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 10", "subject": "Biology", "paper_id": "upk_punjab_c10_bio_01",
+        "country": "UK", "category": "Final Term", "class_name": "O Level", "subject": "Computer Science",
+        "paper_id": "uk_final_olevel_cs_01",
         "mcqs": [
-            "The largest gland in the human body is: A) Liver  B) Pancreas  C) Thyroid  D) Adrenal",
-            "Growth hormone is secreted by the: A) Pituitary gland  B) Thyroid gland  C) Adrenal cortex  D) Pancreas",
+            "Which data structure is used for BFS? A) Queue  B) Stack  C) Tree  D) Linked list",
+            "The two's complement of 0101 is: A) 1011  B) 1010  C) 1100  D) 1001",
         ],
         "short_questions": [
-            "Explain the role of insulin and glucagon in regulating blood glucose.",
-            "What is a reflex action? Describe the reflex arc.",
+            "Write pseudocode to find the largest element in an array of n integers.",
+            "Explain the difference between a compiler and an interpreter.",
         ],
         "long_questions": [
-            "Describe the endocrine system. Explain the hormones secreted by the pituitary, thyroid, adrenal, and reproductive glands.",
+            "Describe the OSI model. Explain the role of each layer and how data is encapsulated as it moves down the stack.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # UK — Quiz
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "UK", "category": "Quiz", "class_name": "A Level", "subject": "Chemistry",
+        "paper_id": "uk_quiz_alevel_chem_01",
+        "mcqs": [
+            "Grignard reagents are: A) Organomagnesium halides  B) Organolithium compounds  C) Sodium amalgams  D) Boron compounds",
+            "The reaction of alkene with HBr follows: A) Markovnikov's rule  B) Anti-Markovnikov's rule  C) Zaitsev's rule  D) Hückel's rule",
+            "Which acid is used in nitration of benzene? A) H₂SO₄  B) HCl  C) HNO₃  D) Both A and C",
+            "SN2 reactions are favoured by: A) Primary substrates  B) Tertiary substrates  C) Polar protic solvents  D) Carbocation stability",
+        ],
+        "short_questions": [
+            "Distinguish between SN1 and SN2 mechanisms. Which substrate favours each?",
+        ],
+        "long_questions": [],
+    },
+
+    {
+        "country": "UK", "category": "Quiz", "class_name": "O Level", "subject": "Physics",
+        "paper_id": "uk_quiz_olevel_phy_01",
+        "mcqs": [
+            "Which electromagnetic wave has the shortest wavelength? A) Gamma rays  B) X-rays  C) Ultraviolet  D) Radio waves",
+            "The density of water is: A) 1000 kg/m³  B) 100 kg/m³  C) 10000 kg/m³  D) 500 kg/m³",
+            "An object moving in a circle at constant speed has: A) Constant acceleration  B) Zero acceleration  C) Zero velocity  D) Constant velocity",
+            "Which instrument measures atmospheric pressure? A) Barometer  B) Manometer  C) Ammeter  D) Voltmeter",
+        ],
+        "short_questions": [
+            "Explain the difference between mass and weight.",
+        ],
+        "long_questions": [],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # USA — Board Exam
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "USA", "category": "Board Exam", "class_name": "Grade 11", "subject": "Physics",
+        "paper_id": "usa_board_g11_phy_01",
+        "mcqs": [
+            "Newton's second law states that F = : A) ma  B) mv  C) m/a  D) a/m",
+            "The unit of frequency is: A) Hertz  B) Newton  C) Joule  D) Pascal",
+            "Which type of energy is stored in a compressed spring? A) Elastic potential energy  B) Kinetic energy  C) Thermal energy  D) Chemical energy",
+            "The speed of light in a vacuum is: A) 3×10⁸ m/s  B) 3×10⁶ m/s  C) 3×10¹⁰ m/s  D) 3×10⁵ m/s",
+        ],
+        "short_questions": [
+            "A 5 kg object is accelerated at 4 m/s². Calculate the net force acting on it.",
+            "Define projectile motion. What is the shape of the projectile's path?",
+            "Explain the conservation of energy using the example of a roller coaster.",
+        ],
+        "long_questions": [
+            "Describe Newton's Laws of Motion with real-world examples. Derive the impulse-momentum theorem from Newton's Second Law.",
+            "Explain the concept of work, energy, and power. Derive the work-energy theorem. Calculate the power output of an engine that lifts 200 kg by 10 m in 5 seconds.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 10", "subject": "Mathematics", "paper_id": "upk_punjab_c10_math_01",
+        "country": "USA", "category": "Board Exam", "class_name": "Grade 12", "subject": "Chemistry",
+        "paper_id": "usa_board_g12_chem_01",
         "mcqs": [
-            "The roots of x² - 4x + 4 = 0 are: A) Equal and real  B) Unequal and real  C) Imaginary  D) Negative",
-            "In a right triangle, if one angle is 30°, the other acute angle is: A) 60°  B) 45°  C) 90°  D) 30°",
+            "Which of the following is a Lewis acid? A) BF₃  B) NH₃  C) H₂O  D) OH⁻",
+            "The molar mass of NaCl is: A) 58.5 g/mol  B) 23 g/mol  C) 35.5 g/mol  D) 40 g/mol",
+            "Entropy is a measure of: A) Disorder in a system  B) Energy content  C) Temperature  D) Pressure",
         ],
         "short_questions": [
-            "Find the sum of first 20 terms of the AP: 1, 3, 5, 7, ...",
-            "Prove: tan²θ + 1 = sec²θ.",
+            "Explain Le Chatelier's Principle with an example involving the Haber Process.",
+            "Define electronegativity. How does it trend across a period and down a group?",
+            "What is a buffer solution? Describe how it resists pH changes.",
         ],
         "long_questions": [
-            "Prove that the tangent at any point of a circle is perpendicular to the radius through that point.",
+            "Describe the thermodynamics of chemical reactions. Define ΔH, ΔS, and ΔG. Under what conditions is a reaction spontaneous?",
+            "Explain electrochemical cells. Describe the Daniell cell, write half-reactions, and calculate EMF using standard electrode potentials.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 10", "subject": "Computer Science", "paper_id": "upk_punjab_c10_cs_01",
+        "country": "USA", "category": "Board Exam", "class_name": "Grade 10", "subject": "Biology",
+        "paper_id": "usa_board_g10_bio_01",
         "mcqs": [
-            "Which of the following is an example of cloud storage? A) Google Drive  B) USB drive  C) RAM  D) Hard disk",
-            "Which tag creates a hyperlink in HTML? A) <a>  B) <link>  C) <href>  D) <url>",
+            "Photosynthesis takes place in: A) Chloroplasts  B) Mitochondria  C) Ribosomes  D) Vacuoles",
+            "Which molecule carries genetic information? A) DNA  B) Protein  C) Lipid  D) Carbohydrate",
+            "The process by which cells divide to produce gametes is: A) Meiosis  B) Mitosis  C) Binary fission  D) Budding",
         ],
         "short_questions": [
-            "Write a Python program to check if a given year is a leap year.",
-            "What is cybersecurity? List three common cyber threats.",
+            "Explain the difference between aerobic and anaerobic respiration with equations.",
+            "Describe the structure of DNA. What does the base-pairing rule state?",
+            "What is natural selection? Give an example of adaptation.",
         ],
         "long_questions": [
-            "Explain the concept of the Internet of Things (IoT). Describe its applications in healthcare, smart homes, and agriculture.",
-        ],
-    },
-
-    # ── Pakistan > Punjab Boards > Class 11 ──────────────────────────────────
-    {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 11", "subject": "Physics", "paper_id": "upk_punjab_c11_phy_01",
-        "mcqs": [
-            "The drag force on a body moving through a fluid is proportional to: A) v²  B) v  C) √v  D) 1/v",
-            "The moment of inertia of a solid sphere about its diameter is: A) 2/5 mr²  B) 2/3 mr²  C) mr²  D) 1/2 mr²",
-        ],
-        "short_questions": [
-            "Distinguish between elastic and inelastic collisions. In which is kinetic energy conserved?",
-            "Explain the concept of escape velocity. Calculate it for the Earth (g = 9.8 m/s², R = 6400 km).",
-        ],
-        "long_questions": [
-            "Explain Bernoulli's equation and its derivation. Describe its applications: flight lift, carburetor, and Venturi meter.",
+            "Describe the cell cycle including mitosis phases. Why is mitosis important for organisms?",
+            "Explain the flow of energy through an ecosystem. Describe producers, consumers, and decomposers with examples.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 11", "subject": "Chemistry", "paper_id": "upk_punjab_c11_chem_01",
+        "country": "USA", "category": "Board Exam", "class_name": "Grade 12", "subject": "Mathematics",
+        "paper_id": "usa_board_g12_math_01",
         "mcqs": [
-            "According to VSEPR, the shape of water (H₂O) is: A) Bent/V-shaped  B) Linear  C) Tetrahedral  D) Trigonal planar",
-            "The standard state of temperature and pressure (STP) is: A) 0°C and 1 atm  B) 25°C and 1 atm  C) 0°C and 100 kPa  D) 100°C and 1 atm",
+            "The derivative of sin x is: A) cos x  B) -cos x  C) -sin x  D) tan x",
+            "limₓ→∞ (1/x) = : A) 0  B) 1  C) ∞  D) -1",
+            "∫ eˣ dx = : A) eˣ + C  B) eˣ·x + C  C) 1/eˣ + C  D) ln x + C",
         ],
         "short_questions": [
-            "Explain Hess's Law. How is it used to calculate enthalpy of formation?",
-            "Define equilibrium constant K. How does it relate to Gibbs free energy?",
+            "Find the derivative of f(x) = x⁴ - 3x³ + 2x - 7.",
+            "Evaluate the definite integral ∫₀² (x² + 1) dx.",
+            "Solve the system: 2x + y = 5 and x - y = 1.",
         ],
         "long_questions": [
-            "Explain chemical thermodynamics. Define enthalpy, entropy, and Gibbs free energy. Derive the relationship ΔG = ΔH - TΔS.",
+            "Explain limits and continuity. Evaluate lim_{x→2} (x²-4)/(x-2) and explain the concept of indeterminate forms.",
+            "Describe sequences and series. Derive the formula for the sum of a geometric series. Find the sum of 1 + 1/2 + 1/4 + ... to infinity.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # USA — Mid Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "USA", "category": "Mid Term", "class_name": "Grade 11", "subject": "Chemistry",
+        "paper_id": "usa_mid_g11_chem_01",
+        "mcqs": [
+            "An exothermic reaction: A) Releases heat  B) Absorbs heat  C) Produces light only  D) Has no energy change",
+            "The number of protons in an atom determines its: A) Atomic number  B) Mass number  C) Neutron count  D) Electron count",
+        ],
+        "short_questions": [
+            "What is the difference between ionic and covalent bonds? Give one example of each.",
+            "Calculate the molarity of a solution containing 5.85 g of NaCl dissolved in 500 mL of water.",
+        ],
+        "long_questions": [
+            "Explain the periodic table trends: atomic radius, ionization energy, and electronegativity. Describe why these trends occur.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 11", "subject": "Biology", "paper_id": "upk_punjab_c11_bio_01",
+        "country": "USA", "category": "Mid Term", "class_name": "Grade 10", "subject": "Mathematics",
+        "paper_id": "usa_mid_g10_math_01",
         "mcqs": [
-            "Which of the following is a totipotent cell? A) Zygote  B) Neuron  C) Muscle cell  D) Red blood cell",
-            "In C4 plants, CO₂ is first fixed into: A) Oxaloacetate  B) 3-PGA  C) G3P  D) RuBP",
+            "The slope of a vertical line is: A) Undefined  B) 0  C) 1  D) -1",
+            "The quadratic formula is: A) x = (-b ± √(b²-4ac))/2a  B) x = -b/2a  C) x = b/a  D) x = √(b²-4ac)",
         ],
         "short_questions": [
-            "Differentiate between C3 and C4 photosynthesis. Give examples of each type.",
-            "What is the significance of Krebs cycle in cellular respiration?",
+            "Solve the equation 3x² - 12 = 0.",
+            "Find the distance between points (3, 4) and (0, 0).",
         ],
         "long_questions": [
-            "Describe the light reactions of photosynthesis. Explain the Z-scheme and the role of photosystems I and II.",
+            "Explain functions and their graphs. Describe domain, range, and identify if f(x) = x² is even, odd, or neither.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # USA — Final Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "USA", "category": "Final Term", "class_name": "Grade 12", "subject": "Computer Science",
+        "paper_id": "usa_final_g12_cs_01",
+        "mcqs": [
+            "Big-O notation O(log n) represents: A) Logarithmic time  B) Linear time  C) Quadratic time  D) Constant time",
+            "A linked list node contains: A) Data and a pointer  B) Only data  C) Only a pointer  D) An array",
+        ],
+        "short_questions": [
+            "Explain the concept of recursion with the factorial function as an example.",
+            "What is a hash table? Explain collision resolution using chaining.",
+        ],
+        "long_questions": [
+            "Compare sorting algorithms: bubble sort, merge sort, and quicksort. Analyze their time complexity for best, average, and worst cases.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 11", "subject": "Mathematics", "paper_id": "upk_punjab_c11_math_01",
+        "country": "USA", "category": "Final Term", "class_name": "Grade 11", "subject": "Biology",
+        "paper_id": "usa_final_g11_bio_01",
         "mcqs": [
-            "The general term of a GP is: A) arⁿ⁻¹  B) a + (n-1)d  C) n(a+l)/2  D) a/(1-r)",
-            "The value of cos(π/3) is: A) 1/2  B) √3/2  C) 1/√2  D) 0",
+            "Which organelle is known as the powerhouse of the cell? A) Mitochondria  B) Nucleus  C) Ribosome  D) Chloroplast",
+            "The Central Dogma of molecular biology states that information flows: A) DNA → RNA → Protein  B) Protein → RNA → DNA  C) RNA → DNA → Protein  D) DNA → Protein → RNA",
         ],
         "short_questions": [
-            "Find the nth term and sum of the GP: 2, 6, 18, 54, ...",
-            "Using De Moivre's theorem, find (1 + i)⁸.",
+            "Describe the process of transcription. Where does it occur in eukaryotes?",
+            "Explain the difference between dominant and recessive alleles with a Punnett square example.",
         ],
         "long_questions": [
-            "Explain arithmetic and geometric progressions. Derive the sum formulas. Find the sum of 12 terms of AP: 5, 9, 13, ... and GP: 3, 6, 12, ...",
+            "Describe genetic engineering and biotechnology. Explain the use of restriction enzymes, PCR, and gel electrophoresis in recombinant DNA technology.",
         ],
     },
 
-    # ── Pakistan > Punjab Boards > Class 12 ──────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════════
+    # USA — Quiz
+    # ══════════════════════════════════════════════════════════════════════════
+
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 12", "subject": "Physics", "paper_id": "upk_punjab_c12_phy_01",
+        "country": "USA", "category": "Quiz", "class_name": "Grade 11", "subject": "Physics",
+        "paper_id": "usa_quiz_g11_phy_01",
         "mcqs": [
-            "In a full-wave rectifier, the ripple frequency is: A) Twice the supply frequency  B) Same as supply frequency  C) Half the supply frequency  D) Four times the supply frequency",
-            "Which of these is an intrinsic semiconductor? A) Pure silicon  B) N-type silicon  C) P-type silicon  D) Doped germanium",
+            "The unit of electric charge is: A) Coulomb  B) Ampere  C) Volt  D) Ohm",
+            "Ohm's Law states: A) V = IR  B) V = I/R  C) I = V²/R  D) R = VI",
+            "Which type of wave is a light wave? A) Transverse  B) Longitudinal  C) Both  D) Neither",
+            "The period of a pendulum depends on: A) Length only  B) Mass only  C) Both length and mass  D) Amplitude",
         ],
         "short_questions": [
-            "What is forward bias in a p-n junction? How does it affect the depletion region?",
-            "Explain the working of a CRO (Cathode Ray Oscilloscope).",
+            "Calculate the resistance of a wire if V = 12 V and I = 3 A.",
         ],
-        "long_questions": [
-            "Describe fission chain reaction. Explain how it is controlled in a nuclear reactor. Discuss safety measures and radioactive waste management.",
-        ],
+        "long_questions": [],
     },
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 12", "subject": "Chemistry", "paper_id": "upk_punjab_c12_chem_01",
+        "country": "USA", "category": "Quiz", "class_name": "Grade 10", "subject": "Chemistry",
+        "paper_id": "usa_quiz_g10_chem_01",
         "mcqs": [
-            "In a Wittig reaction, a carbonyl compound reacts with: A) Phosphorus ylide  B) Grignard reagent  C) Organolithium  D) Sodium borohydride",
-            "Nylon-6 is formed from: A) Caprolactam  B) Ethylene  C) Propylene  D) Styrene",
+            "The pH of a neutral solution is: A) 7  B) 0  C) 14  D) 1",
+            "Which of the following is a noble gas? A) Argon  B) Sodium  C) Chlorine  D) Oxygen",
+            "An acid turns litmus paper: A) Red  B) Blue  C) Green  D) Yellow",
+            "The chemical formula of water is: A) H₂O  B) H₂O₂  C) HO  D) OH₂",
         ],
         "short_questions": [
-            "What is addition polymerization? Give an example with reaction.",
-            "Describe the Cannizzaro reaction. Under what conditions does it occur?",
+            "Define an element and a compound. Give one example of each.",
         ],
-        "long_questions": [
-            "Describe the biological importance of carbohydrates, lipids, and proteins. Explain how each is digested and used by the body.",
-        ],
+        "long_questions": [],
     },
 
-    {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 12", "subject": "Biology", "paper_id": "upk_punjab_c12_bio_01",
-        "mcqs": [
-            "Which hormone triggers ovulation? A) LH  B) FSH  C) Estrogen  D) Progesterone",
-            "Cloning uses the technique of: A) Somatic cell nuclear transfer  B) Meiosis  C) Mitosis  D) Conjugation",
-        ],
-        "short_questions": [
-            "Describe in vitro fertilization (IVF). What are its ethical considerations?",
-            "What is gene therapy? Describe its applications in treating genetic disorders.",
-        ],
-        "long_questions": [
-            "Describe the human immune response to an infection. Explain the roles of T-lymphocytes and B-lymphocytes. How does vaccination work?",
-        ],
-    },
+    # ══════════════════════════════════════════════════════════════════════════
+    # India — Board Exam
+    # ══════════════════════════════════════════════════════════════════════════
 
     {
-        "country": "Pakistan", "category": "Punjab Boards", "class_name": "Class 12", "subject": "Mathematics", "paper_id": "upk_punjab_c12_math_01",
+        "country": "India", "category": "Board Exam", "class_name": "Class 10", "subject": "Physics",
+        "paper_id": "india_board_c10_phy_01",
         "mcqs": [
-            "The order of the differential equation d²y/dx² + dy/dx + y = 0 is: A) 2  B) 1  C) 3  D) 0",
-            "If y = x sin x, then dy/dx = : A) sin x + x cos x  B) x cos x  C) sin x - x cos x  D) cos x",
+            "Ohm's Law is valid when temperature is: A) Constant  B) Increasing  C) Decreasing  D) Changing rapidly",
+            "The SI unit of magnetic flux density is: A) Tesla  B) Weber  C) Gauss  D) Henry",
+            "A convex lens is also called a: A) Converging lens  B) Diverging lens  C) Flat lens  D) Concave lens",
         ],
         "short_questions": [
-            "Solve the ODE: dy/dx = 2x + 1, given y = 3 when x = 0.",
-            "Evaluate: ∫sin²x dx using the double angle formula.",
+            "State and explain Fleming's Left Hand Rule.",
+            "What is electromagnetic induction? State Faraday's first law.",
+            "Explain the working of a simple electric motor.",
         ],
         "long_questions": [
-            "Explain the concept of differential equations. Solve y'' - 4y' + 4y = 0 using the characteristic equation method.",
-        ],
-    },
-
-    # ── Pakistan > Cambridge > O Level ───────────────────────────────────────
-    {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "O Level", "subject": "Physics", "paper_id": "upk_cam_olevel_phy_01",
-        "mcqs": [
-            "The efficiency of a machine is always: A) Less than 100%  B) Equal to 100%  C) Greater than 100%  D) Zero",
-            "Sound cannot travel through: A) Vacuum  B) Air  C) Water  D) Solid",
-        ],
-        "short_questions": [
-            "Define efficiency of a machine. Why is it always less than 100%?",
-            "Explain the difference between transverse and longitudinal waves with diagrams.",
-        ],
-        "long_questions": [
-            "Explain how a thermocouple works as a thermometer. Compare it with a clinical thermometer and an infrared thermometer in terms of range and sensitivity.",
+            "Describe the construction and working of an AC generator. Explain how sinusoidal EMF is produced.",
+            "Explain refraction of light through a glass prism. Describe dispersion and the formation of a spectrum.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "O Level", "subject": "Chemistry", "paper_id": "upk_cam_olevel_chem_01",
+        "country": "India", "category": "Board Exam", "class_name": "Class 12", "subject": "Chemistry",
+        "paper_id": "india_board_c12_chem_01",
         "mcqs": [
-            "The rate of reaction increases with temperature because: A) Particles collide more frequently with more energy  B) Activation energy decreases  C) Products decompose  D) Volume decreases",
-            "Calcium carbonate decomposes on heating to give: A) CaO + CO₂  B) Ca + CO₂  C) CaCO + O₂  D) Ca(OH)₂",
+            "The process of making glucose from CO₂ and H₂O using sunlight is: A) Photosynthesis  B) Glycolysis  C) Fermentation  D) Respiration",
+            "Which type of isomerism is shown by optical isomers? A) Stereoisomerism  B) Structural isomerism  C) Position isomerism  D) Chain isomerism",
+            "The IUPAC name of glycerol is: A) Propan-1,2,3-triol  B) Ethanol  C) Propan-1-ol  D) Glycerine",
         ],
         "short_questions": [
-            "Draw and label the energy profile diagram for an exothermic reaction. Indicate activation energy and ΔH.",
-            "What are the uses of limestone and calcium oxide in industry?",
+            "Explain the Cannizzaro reaction with an example.",
+            "What is Fehling's test? What does it detect?",
+            "Describe the preparation of ethanol by fermentation.",
         ],
         "long_questions": [
-            "Explain the nitrogen cycle. Describe how nitrogen is fixed, nitrified, and denitrified. What is the role of bacteria at each stage?",
+            "Describe the mechanisms of substitution reactions: SN1 and SN2. Compare stereochemical outcomes of each.",
+            "Explain polymers: addition and condensation polymerization. Give two examples of each with monomers and uses.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "O Level", "subject": "Biology", "paper_id": "upk_cam_olevel_bio_01",
+        "country": "India", "category": "Board Exam", "class_name": "Class 11", "subject": "Mathematics",
+        "paper_id": "india_board_c11_math_01",
         "mcqs": [
-            "The process by which plants lose water vapor from leaves is: A) Transpiration  B) Perspiration  C) Respiration  D) Evaporation",
-            "Double fertilization occurs in: A) Angiosperms  B) Gymnosperms  C) Ferns  D) Mosses",
+            "The number of ways to arrange 6 people in a row is: A) 720  B) 120  C) 360  D) 60",
+            "The value of cos 2θ in terms of cos θ is: A) 2cos²θ - 1  B) 2sinθcosθ  C) 1 - 2sin²θ  D) Both A and C",
+            "The general term of AP is: A) a + (n-1)d  B) arⁿ⁻¹  C) n(a+l)/2  D) a/(1-r)",
         ],
         "short_questions": [
-            "Explain the factors affecting the rate of transpiration.",
-            "Describe the mechanism of inspiration and expiration in humans.",
+            "Find the number of permutations of the letters in 'MATHEMATICS'.",
+            "Prove: sin(A + B)·sin(A - B) = sin²A - sin²B.",
+            "The 5th term of an AP is 17 and the 10th term is 32. Find the AP.",
         ],
         "long_questions": [
-            "Explain the carbon cycle. Describe how carbon dioxide is added to and removed from the atmosphere. What impact does human activity have on this cycle?",
+            "State and prove the binomial theorem for positive integer n. Expand (1 + x)⁶ and find the coefficient of x³.",
+            "Explain trigonometric functions. Derive the formula for sin(A + B). Use it to find sin 75°.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "O Level", "subject": "Mathematics", "paper_id": "upk_cam_olevel_math_01",
+        "country": "India", "category": "Board Exam", "class_name": "Class 12", "subject": "Biology",
+        "paper_id": "india_board_c12_bio_01",
         "mcqs": [
-            "Vectors are equal when they have the same: A) Magnitude and direction  B) Only magnitude  C) Only direction  D) Starting point",
-            "The bearing of due west is: A) 270°  B) 180°  C) 090°  D) 000°",
+            "The technique used to amplify DNA is: A) PCR  B) Gel electrophoresis  C) ELISA  D) Southern blotting",
+            "Which enzyme cuts DNA at specific sequences? A) Restriction endonuclease  B) DNA polymerase  C) RNA polymerase  D) Ligase",
+            "The antisense RNA approach is used in: A) Gene silencing  B) Translation  C) DNA replication  D) Transcription",
         ],
         "short_questions": [
-            "Vector a = (3, -4). Find |a| and the unit vector in the direction of a.",
-            "A ship sails on bearing 040° for 20 km. Find how far north and east it has travelled.",
+            "Explain the process of cloning a gene into a plasmid vector.",
+            "What is biodiversity? Describe its types and significance.",
+            "Explain ex situ conservation. Give two examples.",
         ],
         "long_questions": [
-            "Construct a cumulative frequency diagram for the following data and use it to find the median, lower quartile, and upper quartile: [marks data for 50 students].",
+            "Describe the human reproductive system. Explain the menstrual cycle including the role of FSH, LH, estrogen, and progesterone.",
+            "Explain the application of biotechnology in medicine and agriculture. Give specific examples of genetically modified organisms.",
         ],
     },
 
-    # ── Pakistan > Cambridge > A Level ───────────────────────────────────────
-    {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "A Level", "subject": "Physics", "paper_id": "upk_cam_alevel_phy_01",
-        "mcqs": [
-            "The energy stored in an inductor is: A) ½LI²  B) LI²  C) ½LI  D) L²I",
-            "Which quantum number determines the spin of an electron? A) Spin quantum number  B) Principal  C) Azimuthal  D) Magnetic",
-        ],
-        "short_questions": [
-            "Explain the quantum tunneling phenomenon. Where is it applied?",
-            "Define magnetic flux density. Derive the force on a current-carrying conductor in a magnetic field.",
-        ],
-        "long_questions": [
-            "Explain special relativity: time dilation and length contraction. Derive the Lorentz transformation equations.",
-        ],
-    },
+    # ══════════════════════════════════════════════════════════════════════════
+    # India — Mid Term
+    # ══════════════════════════════════════════════════════════════════════════
 
     {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "A Level", "subject": "Chemistry", "paper_id": "upk_cam_alevel_chem_01",
+        "country": "India", "category": "Mid Term", "class_name": "Class 10", "subject": "Mathematics",
+        "paper_id": "india_mid_c10_math_01",
         "mcqs": [
-            "Grignard reagent is: A) RMgX  B) RLi  C) R₂Zn  D) RAlX₂",
-            "The Fischer esterification requires: A) Acid catalyst  B) Base catalyst  C) No catalyst  D) Enzyme",
+            "The roots of ax² + bx + c = 0 are real and equal when: A) b²= 4ac  B) b² > 4ac  C) b² < 4ac  D) b = 0",
+            "tan 45° = : A) 1  B) 0  C) √3  D) 1/√2",
         ],
         "short_questions": [
-            "Explain the SN1 and SN2 mechanisms. What factors favour each?",
-            "Describe the Aldol condensation reaction. Give an example.",
+            "If the sum of zeroes of x² - kx + 6 is 3, find k.",
+            "Find the roots of the equation 2x² - 5x + 3 = 0.",
         ],
         "long_questions": [
-            "Discuss retrosynthetic analysis. Plan a synthesis of ibuprofen from benzene using organic reactions.",
+            "State and prove the Pythagoras theorem. Apply it to determine if a triangle with sides 5, 12, 13 is right-angled.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "A Level", "subject": "Biology", "paper_id": "upk_cam_alevel_bio_01",
+        "country": "India", "category": "Mid Term", "class_name": "Class 11", "subject": "Physics",
+        "paper_id": "india_mid_c11_phy_01",
         "mcqs": [
-            "CRISPR-Cas9 is used for: A) Gene editing  B) PCR  C) Gel electrophoresis  D) Cloning",
-            "Which hormone is responsible for the 'fight or flight' response? A) Adrenaline  B) Insulin  C) Thyroxine  D) Cortisol",
+            "The dimension of velocity is: A) LT⁻¹  B) LT  C) L²T⁻¹  D) MLT⁻²",
+            "A scalar quantity has: A) Magnitude only  B) Direction only  C) Both magnitude and direction  D) Neither",
         ],
         "short_questions": [
-            "Explain the CRISPR-Cas9 system. How is it used to edit genes?",
-            "Describe the mechanism of action of hormones using a second messenger model.",
+            "Derive the equation of motion v² = u² + 2as from Newton's laws.",
+            "Define projectile motion. Find the angle for maximum range.",
         ],
         "long_questions": [
-            "Explain the structure and function of the nephron in detail. Include the roles of ultrafiltration, selective reabsorption, and secretion in producing urine.",
+            "Describe the law of universal gravitation. Derive expressions for gravitational field strength and potential.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # India — Final Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "India", "category": "Final Term", "class_name": "Class 12", "subject": "Computer Science",
+        "paper_id": "india_final_c12_cs_01",
+        "mcqs": [
+            "In Python, which keyword is used to define a function? A) def  B) func  C) define  D) function",
+            "Which SQL command removes a table from a database? A) DROP  B) DELETE  C) REMOVE  D) ERASE",
+        ],
+        "short_questions": [
+            "What is a stack? Write Python code to implement push and pop operations.",
+            "Explain the difference between primary key and foreign key in SQL.",
+        ],
+        "long_questions": [
+            "Describe network topologies: bus, ring, star, and mesh. Compare their advantages and disadvantages.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Cambridge", "class_name": "A Level", "subject": "Mathematics", "paper_id": "upk_cam_alevel_math_01",
+        "country": "India", "category": "Final Term", "class_name": "Class 10", "subject": "Biology",
+        "paper_id": "india_final_c10_bio_01",
         "mcqs": [
-            "The modulus of (1 + i) is: A) √2  B) 2  C) 1  D) i",
-            "A stationary point where f''(x) = 0 is called: A) Point of inflection  B) Maximum  C) Minimum  D) Saddle point",
+            "The functional unit of the kidney is: A) Nephron  B) Neuron  C) Alveolus  D) Follicle",
+            "Which part of the brain controls voluntary actions? A) Cerebrum  B) Cerebellum  C) Medulla  D) Hypothalamus",
         ],
         "short_questions": [
-            "Differentiate: f(x) = x³ ln(2x) using the product rule.",
-            "Solve the differential equation: dy/dx = y/x, given y = 2 when x = 1.",
+            "Describe the process of urine formation in the nephron.",
+            "What is a reflex arc? Describe its components with a diagram description.",
         ],
         "long_questions": [
-            "Explain hypothesis testing using the normal distribution. Describe Type I and Type II errors. Test whether the mean IQ of 50 students (mean=105, σ=15) differs from 100 at 5% significance.",
+            "Explain the human digestive system. Describe the role of each organ and the enzymes involved in digestion.",
         ],
     },
 
-    # ── Pakistan > Federal Board > Class 9 ───────────────────────────────────
+    # ══════════════════════════════════════════════════════════════════════════
+    # India — Quiz
+    # ══════════════════════════════════════════════════════════════════════════
+
     {
-        "country": "Pakistan", "category": "Federal Board", "class_name": "Class 9", "subject": "Physics", "paper_id": "upk_fbise_c9_phy_01",
+        "country": "India", "category": "Quiz", "class_name": "Class 11", "subject": "Chemistry",
+        "paper_id": "india_quiz_c11_chem_01",
         "mcqs": [
-            "The property of matter to resist change in its state of motion is: A) Inertia  B) Momentum  C) Force  D) Energy",
-            "The slope of a displacement-time graph gives: A) Velocity  B) Acceleration  C) Distance  D) Force",
+            "Which of the following has the highest ionization energy? A) Ne  B) Na  C) K  D) Li",
+            "The bond angle in water is approximately: A) 104.5°  B) 90°  C) 109.5°  D) 120°",
+            "Which law states that at constant pressure, volume is proportional to temperature? A) Charles's Law  B) Boyle's Law  C) Avogadro's Law  D) Dalton's Law",
+            "The molar volume of an ideal gas at STP is: A) 22.4 L  B) 22.4 mL  C) 11.2 L  D) 44.8 L",
         ],
         "short_questions": [
-            "Define momentum. How is it related to Newton's Second Law?",
-            "A car accelerates from 10 m/s to 30 m/s in 5 s. Find acceleration and distance covered.",
+            "State Avogadro's Law. Calculate the volume of 3 mol of ideal gas at STP.",
+        ],
+        "long_questions": [],
+    },
+
+    {
+        "country": "India", "category": "Quiz", "class_name": "Class 12", "subject": "Physics",
+        "paper_id": "india_quiz_c12_phy_01",
+        "mcqs": [
+            "A diode in forward bias allows: A) Current to flow easily  B) No current to flow  C) Current in reverse direction  D) None of these",
+            "The wavelength associated with a particle is: A) De Broglie wavelength  B) Compton wavelength  C) X-ray wavelength  D) Sound wavelength",
+            "Which gate is called a universal gate? A) NAND  B) AND  C) OR  D) NOT",
+            "The half-life of a radioactive element is the time for: A) Half the atoms to decay  B) All atoms to decay  C) Double the atoms  D) One atom to decay",
+        ],
+        "short_questions": [
+            "What is photoelectric effect? What is threshold frequency?",
+        ],
+        "long_questions": [],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Australia — Board Exam
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Australia", "category": "Board Exam", "class_name": "Year 12", "subject": "Physics",
+        "paper_id": "aus_board_y12_phy_01",
+        "mcqs": [
+            "A proton moving through a magnetic field experiences: A) Magnetic force  B) Gravitational force  C) Electrostatic force  D) No force",
+            "Young's double-slit experiment demonstrates: A) Wave nature of light  B) Particle nature of light  C) Speed of light  D) Colour of light",
+            "The half-life of Carbon-14 is approximately: A) 5730 years  B) 1000 years  C) 100 years  D) 10000 years",
+        ],
+        "short_questions": [
+            "Explain the phenomenon of diffraction. Under what conditions is it most pronounced?",
+            "Derive the expression for the time period of a mass-spring system undergoing SHM.",
+            "What is the photoelectric effect? Explain how it supports the quantum theory of light.",
         ],
         "long_questions": [
-            "Explain the concept of circular motion. Derive the expression for centripetal acceleration and force.",
+            "Explain Einstein's theory of special relativity. Describe time dilation and length contraction with mathematical expressions.",
+            "Describe fission and fusion reactions. Compare their energy outputs and discuss their use in power generation.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Federal Board", "class_name": "Class 10", "subject": "Biology", "paper_id": "upk_fbise_c10_bio_01",
+        "country": "Australia", "category": "Board Exam", "class_name": "Year 11", "subject": "Chemistry",
+        "paper_id": "aus_board_y11_chem_01",
         "mcqs": [
-            "The vaccine for smallpox was developed by: A) Edward Jenner  B) Louis Pasteur  C) Alexander Fleming  D) Robert Koch",
-            "The number of chambers in the human heart is: A) 4  B) 2  C) 3  D) 6",
+            "Which of the following is an empirical formula? A) CH₂O  B) C₆H₁₂O₆  C) C₂H₄  D) H₂O₂",
+            "Molar concentration is measured in: A) mol/L  B) g/L  C) mol/kg  D) L/mol",
+            "An indicator is used to detect: A) The end point of a titration  B) Concentration of solution  C) Temperature change  D) Density change",
         ],
         "short_questions": [
-            "What is blood pressure? What are normal systolic and diastolic values?",
-            "Explain the role of platelets in blood clotting.",
+            "Explain the difference between strong and weak acids. Give one example of each.",
+            "Calculate the concentration of NaOH if 25 mL neutralises 20 mL of 0.1 M H₂SO₄.",
+            "Describe the collision theory of reaction rates.",
         ],
         "long_questions": [
-            "Describe the structure of the human heart. Explain the cardiac cycle (systole and diastole) and the role of the SA and AV nodes.",
+            "Explain the industrial significance of the Haber Process. Describe how equilibrium principles are applied to optimise ammonia production.",
+            "Describe acid-base theories: Arrhenius, Brønsted-Lowry, and Lewis. Give one example for each theory.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Federal Board", "class_name": "Class 11", "subject": "Chemistry", "paper_id": "upk_fbise_c11_chem_01",
+        "country": "Australia", "category": "Board Exam", "class_name": "Year 10", "subject": "Mathematics",
+        "paper_id": "aus_board_y10_math_01",
         "mcqs": [
-            "The van der Waals forces are strongest in: A) Iodine  B) Methane  C) Helium  D) Neon",
-            "Boiling point of water is higher than H₂S because of: A) Hydrogen bonding  B) Ionic bonding  C) Van der Waals forces  D) Covalent bonds",
+            "The gradient of the line y = -2x + 5 is: A) -2  B) 5  C) 2  D) -5",
+            "The solution of |x - 3| = 4 is: A) x = 7 or x = -1  B) x = 7 only  C) x = -1 only  D) x = 1",
+            "A circle with equation x² + y² = 25 has radius: A) 5  B) 25  C) 10  D) 5π",
         ],
         "short_questions": [
-            "Compare the physical properties of ionic and covalent compounds.",
-            "Explain the Born-Haber cycle for NaCl. Identify each energy term.",
+            "Expand and simplify (3x - 2)².",
+            "Solve the simultaneous equations: y = 2x - 3 and y = -x + 6.",
+            "Find the 15th term and sum of the first 15 terms of AP: 4, 9, 14, 19, ...",
         ],
         "long_questions": [
-            "Describe different types of solids: ionic, molecular, covalent, and metallic. Compare their properties and give two examples of each.",
+            "Prove the cosine rule: c² = a² + b² - 2ab cos C. Apply it to find the third side of a triangle with sides 6 cm, 8 cm and included angle 60°.",
+            "Describe surface area and volume of 3D solids. Calculate the total surface area and volume of a cone with radius 3 cm and height 4 cm.",
         ],
     },
 
     {
-        "country": "Pakistan", "category": "Federal Board", "class_name": "Class 12", "subject": "Mathematics", "paper_id": "upk_fbise_c12_math_01",
+        "country": "Australia", "category": "Board Exam", "class_name": "Year 12", "subject": "Biology",
+        "paper_id": "aus_board_y12_bio_01",
         "mcqs": [
-            "The equation of a circle with centre (h,k) and radius r is: A) (x-h)² + (y-k)² = r²  B) x² + y² = r²  C) (x+h)² + (y+k)² = r²  D) x² + y² = 2r",
-            "The angle between two lines with slopes m₁ and m₂ is: A) tan⁻¹|(m₁-m₂)/(1+m₁m₂)|  B) tan⁻¹(m₁m₂)  C) sin⁻¹(m₁-m₂)  D) cos⁻¹(m₁+m₂)",
+            "Speciation occurs when: A) Populations become reproductively isolated  B) Organisms migrate  C) Gene mutation rate increases  D) Offspring survive",
+            "The term 'ecosystem' refers to: A) All organisms and their physical environment  B) All animals in an area  C) Producers only  D) Food web only",
         ],
         "short_questions": [
-            "Find the equation of the circle passing through (1,0), (0,1), and (0,0).",
-            "Find the angle between the lines 2x - 3y + 1 = 0 and x + y - 2 = 0.",
+            "Explain allopatric speciation. Give one real-world example.",
+            "Describe the role of decomposers in an ecosystem.",
+            "What is artificial selection? How does it differ from natural selection?",
         ],
         "long_questions": [
-            "Explain conic sections analytically. Derive the standard equations of parabola, ellipse, and hyperbola. Identify the type of conic for: x²/9 + y²/4 = 1.",
+            "Describe genetic variation in populations. Explain the mechanisms that maintain and increase variation: mutation, recombination, and migration.",
+            "Discuss human impacts on biodiversity. Describe conservation strategies including in situ and ex situ approaches.",
         ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Australia — Mid Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Australia", "category": "Mid Term", "class_name": "Year 12", "subject": "Physics",
+        "paper_id": "aus_mid_y12_phy_01",
+        "mcqs": [
+            "The unit of electric potential is: A) Volt  B) Joule  C) Coulomb  D) Ampere",
+            "Which law relates electric field and charge distribution? A) Gauss's Law  B) Ohm's Law  C) Faraday's Law  D) Lenz's Law",
+        ],
+        "short_questions": [
+            "Calculate the electric field at a distance of 0.5 m from a 2 μC point charge.",
+            "Explain the difference between electric potential and electric field.",
+        ],
+        "long_questions": [
+            "Derive the expression for the force between two parallel current-carrying conductors. Explain how this defines the ampere.",
+        ],
+    },
+
+    {
+        "country": "Australia", "category": "Mid Term", "class_name": "Year 11", "subject": "Mathematics",
+        "paper_id": "aus_mid_y11_math_01",
+        "mcqs": [
+            "The domain of f(x) = √(x-2) is: A) x ≥ 2  B) x > 2  C) x ≤ 2  D) All real numbers",
+            "If y = 3x² then dy/dx = : A) 6x  B) 3x  C) 6x²  D) x²",
+        ],
+        "short_questions": [
+            "Differentiate f(x) = x³ + 5x² - 3x + 7.",
+            "Find the turning point of y = x² - 6x + 8 and determine if it is a minimum or maximum.",
+        ],
+        "long_questions": [
+            "Explain logarithms and exponential functions. Solve 2^(x+1) = 16 and log₃(x) + log₃(x-8) = 2.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Australia — Final Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Australia", "category": "Final Term", "class_name": "Year 12", "subject": "Chemistry",
+        "paper_id": "aus_final_y12_chem_01",
+        "mcqs": [
+            "An oxidation reaction involves: A) Loss of electrons  B) Gain of electrons  C) Gain of protons  D) Loss of protons",
+            "Which reagent is used to test for the presence of starch? A) Iodine solution  B) Benedict's solution  C) Biuret reagent  D) Fehling's solution",
+        ],
+        "short_questions": [
+            "Explain the differences between galvanic and electrolytic cells.",
+            "What is Faraday's First Law of Electrolysis? Calculate the mass of copper deposited when 2 A flows for 30 min (Cu molar mass = 64 g/mol).",
+        ],
+        "long_questions": [
+            "Describe the chemistry of proteins. Explain primary, secondary, tertiary and quaternary structure. How does denaturation occur?",
+        ],
+    },
+
+    {
+        "country": "Australia", "category": "Final Term", "class_name": "Year 10", "subject": "Biology",
+        "paper_id": "aus_final_y10_bio_01",
+        "mcqs": [
+            "Which process is responsible for genetic variation in offspring? A) Meiosis  B) Mitosis  C) Binary fission  D) Budding",
+            "The building blocks of proteins are: A) Amino acids  B) Fatty acids  C) Nucleotides  D) Monosaccharides",
+        ],
+        "short_questions": [
+            "Explain the differences between DNA replication and transcription.",
+            "What are stem cells? Describe their potential in medical applications.",
+        ],
+        "long_questions": [
+            "Describe how vaccines work. Explain herd immunity and why it is important for public health.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Australia — Quiz
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Australia", "category": "Quiz", "class_name": "Year 12", "subject": "Physics",
+        "paper_id": "aus_quiz_y12_phy_01",
+        "mcqs": [
+            "The Planck constant has units: A) J·s  B) J/s  C) kg·m/s  D) W·m²",
+            "In an ideal gas, pressure is proportional to: A) Temperature (at constant V)  B) Volume  C) Density  D) Molar mass",
+            "Which phenomenon proves light has wave properties? A) Diffraction  B) Photoelectric effect  C) Pair production  D) Compton scattering",
+            "The speed of electromagnetic waves in a vacuum is: A) 3×10⁸ m/s  B) 1.5×10⁸ m/s  C) 6×10⁸ m/s  D) 3×10⁶ m/s",
+        ],
+        "short_questions": [
+            "State the Heisenberg Uncertainty Principle and explain its physical significance.",
+        ],
+        "long_questions": [],
+    },
+
+    {
+        "country": "Australia", "category": "Quiz", "class_name": "Year 11", "subject": "Chemistry",
+        "paper_id": "aus_quiz_y11_chem_01",
+        "mcqs": [
+            "An atom of carbon has 6 protons and 6 neutrons. Its mass number is: A) 12  B) 6  C) 18  D) 0",
+            "Which of the following is a physical change? A) Dissolving sugar  B) Burning wood  C) Rusting iron  D) Cooking an egg",
+            "Electronegativity generally increases: A) Across a period  B) Down a group  C) With atomic mass  D) With atomic radius",
+            "What type of bond is formed between Na and Cl? A) Ionic  B) Covalent  C) Metallic  D) Hydrogen",
+        ],
+        "short_questions": [
+            "Define isotopes. Give two isotopes of hydrogen and their applications.",
+        ],
+        "long_questions": [],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Canada — Board Exam
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Canada", "category": "Board Exam", "class_name": "Grade 12", "subject": "Physics",
+        "paper_id": "can_board_g12_phy_01",
+        "mcqs": [
+            "The conservation of momentum applies to: A) All closed systems  B) Only elastic collisions  C) Only inelastic collisions  D) Only massive objects",
+            "An electric field lines always point: A) Away from positive charges  B) Toward positive charges  C) In circular loops  D) Perpendicular to charge",
+            "Kirchhoff's Current Law states: A) Sum of currents at a node = 0  B) Sum of voltages in a loop = 0  C) Current is constant in all branches  D) Voltage drops across resistors equally",
+        ],
+        "short_questions": [
+            "Explain the Doppler effect. How is it applied in radar speed guns?",
+            "Calculate the wavelength of a photon with energy 3.2×10⁻¹⁹ J (h = 6.63×10⁻³⁴ J·s, c = 3×10⁸ m/s).",
+            "Describe what happens to the image formed by a concave mirror when an object is placed at focus.",
+        ],
+        "long_questions": [
+            "Derive the equation for the magnetic force on a moving charge. Describe circular motion of a charged particle in a uniform magnetic field.",
+            "Explain the wave-particle duality of electrons. Describe the evidence from the double-slit experiment.",
+        ],
+    },
+
+    {
+        "country": "Canada", "category": "Board Exam", "class_name": "Grade 11", "subject": "Chemistry",
+        "paper_id": "can_board_g11_chem_01",
+        "mcqs": [
+            "VSEPR theory predicts the: A) Molecular geometry  B) Atomic mass  C) Nuclear charge  D) Bond energy",
+            "The oxidation number of oxygen in H₂O is: A) -2  B) +2  C) 0  D) -1",
+            "Which type of reaction produces a precipitate? A) Precipitation  B) Combustion  C) Synthesis  D) Decomposition",
+        ],
+        "short_questions": [
+            "Draw the Lewis structure of CO₂ and determine its molecular geometry.",
+            "Explain the difference between molarity and molality.",
+            "What is stoichiometry? Calculate the mass of CO₂ produced when 12 g of C burns completely.",
+        ],
+        "long_questions": [
+            "Describe intermolecular forces: London dispersion, dipole-dipole, and hydrogen bonding. How do they affect boiling point?",
+            "Explain chemical kinetics: rate law, rate constant, and reaction orders. How is the rate constant determined experimentally?",
+        ],
+    },
+
+    {
+        "country": "Canada", "category": "Board Exam", "class_name": "Grade 10", "subject": "Biology",
+        "paper_id": "can_board_g10_bio_01",
+        "mcqs": [
+            "The process of converting glucose to pyruvate is called: A) Glycolysis  B) Krebs cycle  C) Calvin cycle  D) Photosynthesis",
+            "Cells in a hypertonic solution will: A) Shrink  B) Swell  C) Stay the same  D) Burst",
+            "Which molecule is the energy currency of the cell? A) ATP  B) ADP  C) NADH  D) RNA",
+        ],
+        "short_questions": [
+            "Describe the structure of a eukaryotic cell. Name three organelles and their functions.",
+            "Explain active transport. How does it differ from passive diffusion?",
+            "What is the role of enzymes in biochemical reactions? How does temperature affect enzyme activity?",
+        ],
+        "long_questions": [
+            "Compare aerobic and anaerobic respiration. Write chemical equations for each and state the ATP yield.",
+            "Describe the structure of DNA. Explain the process of DNA replication including the role of DNA polymerase.",
+        ],
+    },
+
+    {
+        "country": "Canada", "category": "Board Exam", "class_name": "Grade 12", "subject": "Mathematics",
+        "paper_id": "can_board_g12_math_01",
+        "mcqs": [
+            "The value of lim_{x→0} sin x / x is: A) 1  B) 0  C) ∞  D) -1",
+            "A function is continuous at x = a if: A) lim_{x→a} f(x) = f(a)  B) f(a) exists only  C) f'(a) exists  D) f(a) = 0",
+            "The area under a curve from a to b is given by: A) ∫ₐᵇ f(x) dx  B) f'(b) - f'(a)  C) f(b) - f(a)  D) ∑f(x)",
+        ],
+        "short_questions": [
+            "Use L'Hôpital's Rule to evaluate lim_{x→0} (sin x)/x.",
+            "Find the equation of the tangent to y = x³ - 2x at x = 1.",
+            "Evaluate ∫₀¹ (3x² + 2x) dx.",
+        ],
+        "long_questions": [
+            "Explain probability distributions. Describe the binomial and normal distributions. Find P(X = 3) for B(5, 0.4).",
+            "Describe vectors in 3D space. Define dot product and cross product. Find the volume of the parallelepiped formed by a = (1,2,3), b = (4,5,6), c = (7,8,0).",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Canada — Mid Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Canada", "category": "Mid Term", "class_name": "Grade 12", "subject": "Computer Science",
+        "paper_id": "can_mid_g12_cs_01",
+        "mcqs": [
+            "Which data structure follows FIFO? A) Queue  B) Stack  C) Tree  D) Heap",
+            "The time complexity of binary search is: A) O(log n)  B) O(n)  C) O(n²)  D) O(1)",
+        ],
+        "short_questions": [
+            "Explain the concept of object-oriented programming. Define encapsulation, inheritance, and polymorphism.",
+            "Write pseudocode for insertion sort and state its time complexity.",
+        ],
+        "long_questions": [
+            "Describe graph data structures. Explain DFS and BFS traversal with examples. What are their time complexities?",
+        ],
+    },
+
+    {
+        "country": "Canada", "category": "Mid Term", "class_name": "Grade 11", "subject": "Physics",
+        "paper_id": "can_mid_g11_phy_01",
+        "mcqs": [
+            "The coefficient of kinetic friction is always: A) Less than coefficient of static friction  B) Greater  C) Equal  D) Unrelated",
+            "Which law of thermodynamics states energy cannot be created or destroyed? A) First  B) Second  C) Third  D) Zeroth",
+        ],
+        "short_questions": [
+            "Explain the work-energy theorem. Give a practical example.",
+            "A 2 kg block slides down a frictionless incline at 30°. Find the acceleration.",
+        ],
+        "long_questions": [
+            "Describe circular motion. Derive the centripetal acceleration formula. Apply it to a car turning on a banked road.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Canada — Final Term
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Canada", "category": "Final Term", "class_name": "Grade 11", "subject": "Biology",
+        "paper_id": "can_final_g11_bio_01",
+        "mcqs": [
+            "Which gas is released during photosynthesis? A) Oxygen  B) Carbon dioxide  C) Nitrogen  D) Hydrogen",
+            "Meiosis produces: A) 4 haploid cells  B) 2 diploid cells  C) 2 haploid cells  D) 4 diploid cells",
+        ],
+        "short_questions": [
+            "Explain the greenhouse effect. How does CO₂ contribute to global warming?",
+            "What is a keystone species? Give one example and explain its role.",
+        ],
+        "long_questions": [
+            "Describe the nitrogen cycle. Explain the role of nitrogen-fixing bacteria, nitrification, denitrification, and decomposition.",
+        ],
+    },
+
+    {
+        "country": "Canada", "category": "Final Term", "class_name": "Grade 10", "subject": "Chemistry",
+        "paper_id": "can_final_g10_chem_01",
+        "mcqs": [
+            "Which of the following is a sign of a chemical reaction? A) Colour change  B) No change in mass  C) Same properties  D) Reversible mixing",
+            "The molar mass of CO₂ is: A) 44 g/mol  B) 28 g/mol  C) 12 g/mol  D) 32 g/mol",
+        ],
+        "short_questions": [
+            "Balance the equation: Fe + HCl → FeCl₂ + H₂. Calculate the mass of H₂ produced from 5.6 g of Fe.",
+            "Define alloys. Give two examples and their uses.",
+        ],
+        "long_questions": [
+            "Describe the properties and uses of acids and bases. Explain neutralization. Describe the pH scale and its significance.",
+        ],
+    },
+
+    # ══════════════════════════════════════════════════════════════════════════
+    # Canada — Quiz
+    # ══════════════════════════════════════════════════════════════════════════
+
+    {
+        "country": "Canada", "category": "Quiz", "class_name": "Grade 12", "subject": "Mathematics",
+        "paper_id": "can_quiz_g12_math_01",
+        "mcqs": [
+            "The inverse of the function f(x) = 2x + 3 is: A) f⁻¹(x) = (x-3)/2  B) f⁻¹(x) = 2x - 3  C) f⁻¹(x) = (x+3)/2  D) f⁻¹(x) = x/2",
+            "The sum of the infinite geometric series 1 + 1/3 + 1/9 + ... is: A) 3/2  B) 2  C) 1  D) 3",
+            "If f(x) = x² and g(x) = 2x, then f(g(x)) = : A) 4x²  B) 2x²  C) x⁴  D) 4x",
+            "The discriminant of 3x² - 6x + 3 = 0 is: A) 0  B) 36  C) -36  D) 12",
+        ],
+        "short_questions": [
+            "Find all values of x such that 2ˣ = 64.",
+        ],
+        "long_questions": [],
+    },
+
+    {
+        "country": "Canada", "category": "Quiz", "class_name": "Grade 11", "subject": "Biology",
+        "paper_id": "can_quiz_g11_bio_01",
+        "mcqs": [
+            "Which organelle contains the genetic material of a cell? A) Nucleus  B) Mitochondria  C) Ribosome  D) Cell membrane",
+            "The scientific name of humans is: A) Homo sapiens  B) Homo erectus  C) Australopithecus  D) Homo habilis",
+            "Active transport requires: A) ATP  B) Oxygen  C) Sunlight  D) Water",
+            "DNA replication is: A) Semi-conservative  B) Conservative  C) Dispersive  D) Random",
+        ],
+        "short_questions": [
+            "Explain the difference between mitosis and meiosis. When does each occur in the human body?",
+        ],
+        "long_questions": [],
     },
 ]
 
@@ -505,7 +979,9 @@ def _make_id(prefix: str, index: int, text: str) -> str:
 
 def seed_unverified_store() -> None:
     """
-    Seed the unverified ChromaDB collection with community-style exam papers.
+    Seed the unverified ChromaDB collection with international exam papers.
+    Countries: UK, USA, India, Australia, Canada.
+    Categories: Board Exam, Mid Term, Final Term, Quiz.
     Papers are stored DIRECTLY in the vector DB — no file system storage.
     Idempotent — skips if collection already populated.
     """
@@ -516,7 +992,7 @@ def seed_unverified_store() -> None:
         print(f"[Seed] Unverified store already has {existing_count} documents — skipping.")
         return
 
-    print("[Seed] Building unverified store …")
+    print("[Seed] Building unverified store with international papers …")
     documents = []
     metadatas = []
 
