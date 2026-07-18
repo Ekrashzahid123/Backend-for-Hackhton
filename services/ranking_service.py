@@ -12,8 +12,7 @@ def rank_questions(questions: list) -> list:
     # If there's only one question or very few words, TF-IDF might not be super meaningful,
     # but it won't break if we handle it properly.
     try:
-        vectorizer = T
-        stop_words='english')
+        vectorizer = TfidfVectorizer(stop_words='english')
         tfidf_matrix = vectorizer.fit_transform(questions)
         
         # Calculate sum of tf-idf scores for each question

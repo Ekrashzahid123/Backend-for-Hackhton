@@ -9,21 +9,29 @@ from routes import verified, unverified
 
 
 def _seed_in_background():
-    """Run verified store seeding in a daemon thread — non-blocking."""
+    """Run verified and unverified store seeding in a daemon thread — non-blocking."""
     try:
         from services.seed_verified import seed_verified_store
+        print("[Startup] Starting verified store seeding...")
         seed_verified_store()
     except Exception as e:
         print(f"[Startup] Verified store seeding error: {e}")
+
+    try:
+        from services.seed_unverified_store import seed_unverified_store
+        print("[Startup] Starting unverified store seeding...")
+        seed_unverified_store()
+    except Exception as e:
+        print(f"[Startup] Unverified store seeding error: {e}")
 
 
 # ─── Startup lifespan ─────────────────────────────────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Kick off verified store seeding in the background; don't block startup."""
+    """Kick off store seeding in the background; don't block startup."""
     t = threading.Thread(target=_seed_in_background, daemon=True)
     t.start()
-    print("[Startup] Verified store seeding started in background thread.")
+    print("[Startup] Verified and Unverified store seeding started in background thread.")
     yield
 
 

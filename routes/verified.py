@@ -1,8 +1,9 @@
 """
 Verified data routes — queries the VERIFIED ChromaDB vector store.
 
-Endpoints:
-  POST /verified/generate-quiz
+Endpoints (names/paths unchanged):
+  GET  /verified/papers              — metadata hierarchy
+  POST /verified/generate-quiz       — select MCQs from verified DB
   POST /verified/generate-paper/cambridge
   POST /verified/generate-paper/boards
 """
@@ -13,6 +14,7 @@ from models.schemas import (
     VerifiedQuizResponse,
     VerifiedPaperRequest,
     VerifiedPaperResponse,
+    VerifiedHierarchyResponse,
     MCQItem,
     MCQOption,
     ShortQuestion,
@@ -41,31 +43,28 @@ def _parse_mcq(raw: dict, idx: int) -> MCQItem:
 
 
 def _parse_short(raw: dict, idx: int) -> ShortQuestion:
-    return ShortQuestion(
-        id=raw.get("id", idx + 1),
-        question=str(raw.get("question", "")),
-    )
+    return ShortQuestion(id=raw.get("id", idx + 1), question=str(raw.get("question", "")))
 
 
 def _parse_long(raw: dict, idx: int) -> LongQuestion:
-    return LongQuestion(
-        id=raw.get("id", idx + 1),
-        question=str(raw.get("question", "")),
-    )
+    return LongQuestion(id=raw.get("id", idx + 1), question=str(raw.get("question", "")))
 
 
-def _build_filter(class_name: str = None, subject: str = None) -> dict | None:
-    """Build a ChromaDB $and/$eq where filter from optional fields."""
-    conditions = []
-    if class_name:
-        conditions.append({"class_name": {"$eq": class_name}})
-    if subject:
-        conditions.append({"subject": {"$eq": subject}})
-    if not conditions:
-        return None
-    if len(conditions) == 1:
-        return conditions[0]
-    return {"$and": conditions}
+# ═══════════════════════════════════════════════════════════════════════════════
+# GET /verified/papers  — metadata hierarchy
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@router.get("/papers", response_model=VerifiedHierarchyResponse)
+async def list_verified_papers():
+    """
+    Returns the full metadata hierarchy from the Verified Vector DB.
+    Structure: Country → Categories → Classes → Subjects
+    No question content is returned.
+    """
+    hierarchy = vector_store.get_verified_hierarchy()
+    if not hierarchy:
+        return VerifiedHierarchyResponse(hierarchy={})
+    return VerifiedHierarchyResponse(hierarchy=hierarchy)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -75,29 +74,56 @@ def _build_filter(class_name: str = None, subject: str = None) -> dict | None:
 @router.post("/generate-quiz", response_model=VerifiedQuizResponse)
 async def generate_quiz(req: VerifiedQuizRequest):
     """
-    Generate MCQs (with answers) from the verified vector store.
-    Body: { "query": "photosynthesis" }
+    Generate MCQs (with answers) from the VERIFIED vector store only.
+
+    Flow:
+      1. Filter Verified DB by metadata (country, category, class, subject)
+      2. Retrieve ALL matching MCQs
+      3. Pass ALL MCQs to LLM — select & rank only, never invent
     """
-    # 1. Semantic retrieval
-    chunks = vector_store.query_verified(query=req.query, n_results=20)
-    if not chunks:
+    # Step 1 + 2: Metadata-filtered retrieval of all verified MCQs
+    questions = vector_store.get_verified_questions_by_type(
+        country=req.country,
+        category=req.category,
+        class_name=req.class_name,
+        subject=req.subject,
+    )
+    mcqs = questions["mcqs"]
+
+    # Fallback: semantic search if metadata filters yield no results
+    if not mcqs:
+        chunks = vector_store.query_verified(query=req.query, n_results=50)
+        mcqs = [c["text"] for c in chunks
+                if c.get("metadata", {}).get("question_type") == "mcq"]
+        # If still empty, use all chunks
+        if not mcqs:
+            mcqs = [c["text"] for c in chunks]
+
+    if not mcqs:
         raise HTTPException(
             status_code=404,
-            detail="No verified data found. Please seed the verified vector store first.",
+            detail="No verified MCQ data found. Please seed the verified vector store first.",
         )
 
-    # 2. AI generation
-    raw_mcqs: List[dict] = ai_service.generate_quiz(req.query, chunks)
+    # Step 3: LLM selects & ranks — never invents
+    n_mcqs = req.number_of_mcqs or 10
+    preference = req.preference or "Mixed"
+
+    raw_mcqs: List[dict] = ai_service.generate_quiz_from_questions(
+        mcqs=mcqs,
+        number_of_mcqs=n_mcqs,
+        preference=preference,
+    )
+
     if not raw_mcqs:
         raise HTTPException(status_code=404, detail="No data available for this query.")
 
-    # 3. Parse & validate
     try:
-        mcqs = [_parse_mcq(m, i) for i, m in enumerate(raw_mcqs)]
+        mcq_items = [_parse_mcq(m, i) for i, m in enumerate(raw_mcqs)]
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to parse AI response: {e}")
 
-    return VerifiedQuizResponse(mcqs=mcqs)
+    return VerifiedQuizResponse(mcqs=mcq_items)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -107,37 +133,56 @@ async def generate_quiz(req: VerifiedQuizRequest):
 @router.post("/generate-paper/cambridge", response_model=VerifiedPaperResponse)
 async def generate_paper_cambridge(req: VerifiedPaperRequest):
     """
-    Generate a Cambridge-style exam paper from the verified vector store.
-    Body: { "class": "O Level", "subject": "Biology", "mcqs": 10,
-            "short_questions": 5, "long_questions": 3, "query": "difficult, famous" }
+    Generate a Cambridge-style exam paper from the VERIFIED vector store.
+
+    Flow:
+      1. Filter Verified DB by metadata (country, category, class, subject)
+      2. Retrieve ALL matching MCQs / Short / Long questions separately
+      3. Pass ALL to LLM — select & rank only, never invent
     """
-    where = _build_filter(req.class_name, req.subject)
-    chunks = vector_store.query_verified(
-        query=f"{req.query} {req.subject} {req.class_name}",
-        n_results=30,
-        where=where,
+    # Step 1 + 2: Metadata-filtered retrieval
+    questions = vector_store.get_verified_questions_by_type(
+        country=req.country,
+        category=req.category or "Cambridge",
+        class_name=req.class_name,
+        subject=req.subject,
     )
 
-    # Fallback: search without strict filter if insufficient results
-    if len(chunks) < 5:
+    # Fallback: semantic search when metadata yields nothing
+    if not any(questions.values()):
         chunks = vector_store.query_verified(
-            query=f"{req.query} {req.subject}",
-            n_results=30,
+            query=f"{req.query} {req.subject} {req.class_name}",
+            n_results=50,
+            where={"class_name": {"$eq": req.class_name}} if req.class_name else None,
         )
+        for c in chunks:
+            qt = c.get("metadata", {}).get("question_type", "")
+            text = c["text"]
+            if qt == "mcq":
+                questions["mcqs"].append(text)
+            elif qt == "short":
+                questions["short"].append(text)
+            elif qt == "long":
+                questions["long"].append(text)
+            else:
+                questions["mcqs"].append(text)  # default
 
-    if not chunks:
+    if not any(questions.values()):
         raise HTTPException(
             status_code=404,
             detail="No verified data found for the given subject/class.",
         )
 
-    raw = ai_service.generate_paper_sections(
-        query=req.query,
-        retrieved_chunks=chunks,
-        num_mcqs=req.mcqs,
-        num_short=req.short_questions,
-        num_long=req.long_questions,
-        paper_style="cambridge",
+    # Step 3: LLM selects & ranks — Cambridge style
+    preference = req.preference or req.query
+    raw = ai_service.generate_paper_from_questions(
+        mcqs=questions["mcqs"],
+        short_questions=questions["short"],
+        long_questions=questions["long"],
+        number_of_mcqs=req.mcqs,
+        number_of_short_questions=req.short_questions,
+        number_of_long_questions=req.long_questions,
+        preference=preference,
     )
 
     if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):
@@ -157,36 +202,56 @@ async def generate_paper_cambridge(req: VerifiedPaperRequest):
 @router.post("/generate-paper/boards", response_model=VerifiedPaperResponse)
 async def generate_paper_boards(req: VerifiedPaperRequest):
     """
-    Generate a Pakistani Boards-style exam paper from the verified vector store.
-    Body: { "class": "Class 10", "subject": "Biology", "mcqs": 10,
-            "short_questions": 5, "long_questions": 3, "query": "easy, famous" }
+    Generate a Pakistani Boards-style exam paper from the VERIFIED vector store.
+
+    Flow:
+      1. Filter Verified DB by metadata (country, category, class, subject)
+      2. Retrieve ALL matching MCQs / Short / Long questions separately
+      3. Pass ALL to LLM — select & rank only, never invent
     """
-    where = _build_filter(req.class_name, req.subject)
-    chunks = vector_store.query_verified(
-        query=f"{req.query} {req.subject} {req.class_name}",
-        n_results=30,
-        where=where,
+    # Step 1 + 2: Metadata-filtered retrieval
+    questions = vector_store.get_verified_questions_by_type(
+        country=req.country or "Pakistan",
+        category=req.category,
+        class_name=req.class_name,
+        subject=req.subject,
     )
 
-    if len(chunks) < 5:
+    # Fallback: semantic search when metadata yields nothing
+    if not any(questions.values()):
         chunks = vector_store.query_verified(
-            query=f"{req.query} {req.subject}",
-            n_results=30,
+            query=f"{req.query} {req.subject} {req.class_name}",
+            n_results=50,
+            where={"class_name": {"$eq": req.class_name}} if req.class_name else None,
         )
+        for c in chunks:
+            qt = c.get("metadata", {}).get("question_type", "")
+            text = c["text"]
+            if qt == "mcq":
+                questions["mcqs"].append(text)
+            elif qt == "short":
+                questions["short"].append(text)
+            elif qt == "long":
+                questions["long"].append(text)
+            else:
+                questions["short"].append(text)  # default
 
-    if not chunks:
+    if not any(questions.values()):
         raise HTTPException(
             status_code=404,
             detail="No verified data found for the given subject/class.",
         )
 
-    raw = ai_service.generate_paper_sections(
-        query=req.query,
-        retrieved_chunks=chunks,
-        num_mcqs=req.mcqs,
-        num_short=req.short_questions,
-        num_long=req.long_questions,
-        paper_style="boards",
+    # Step 3: LLM selects & ranks — Boards style
+    preference = req.preference or req.query
+    raw = ai_service.generate_paper_from_questions(
+        mcqs=questions["mcqs"],
+        short_questions=questions["short"],
+        long_questions=questions["long"],
+        number_of_mcqs=req.mcqs,
+        number_of_short_questions=req.short_questions,
+        number_of_long_questions=req.long_questions,
+        preference=preference,
     )
 
     if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):

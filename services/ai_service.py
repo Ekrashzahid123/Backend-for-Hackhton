@@ -294,6 +294,273 @@ Do NOT include text outside the JSON."""
 # FIELD NORMALISATION  (prevent duplicate country/class/subject names)
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# PAPER GENERATION — spec-mandated: SELECT ONLY, never invent
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def generate_paper_from_questions(
+    mcqs: List[str],
+    short_questions: List[str],
+    long_questions: List[str],
+    number_of_mcqs: int,
+    number_of_short_questions: int,
+    number_of_long_questions: int,
+    preference: str = "Mixed",
+) -> Dict[str, List]:
+    """
+    Select and rank EXISTING questions only — LLM never invents.
+    Implements the exact spec prompt.
+
+    Returns:
+    {
+      "mcqs": [ MCQ objects ],
+      "short_questions": [ {"id": 1, "question": "..."} ],
+      "long_questions":  [ {"id": 1, "question": "..."} ]
+    }
+    """
+    if not _client:
+        return _fallback_select(
+            mcqs, short_questions, long_questions,
+            number_of_mcqs, number_of_short_questions, number_of_long_questions,
+        )
+
+    mcq_block   = "\n".join(f"{i+1}. {q}" for i, q in enumerate(mcqs))   or "None available."
+    short_block = "\n".join(f"{i+1}. {q}" for i, q in enumerate(short_questions)) or "None available."
+    long_block  = "\n".join(f"{i+1}. {q}" for i, q in enumerate(long_questions))  or "None available."
+
+    prompt = f"""You are provided with a list of examination questions.
+
+Use ONLY these questions. Do NOT generate new questions.
+
+Select exactly:
+{number_of_mcqs} MCQs
+{number_of_short_questions} Short Questions
+{number_of_long_questions} Long Questions
+
+Preference: {preference}
+(Easy = simpler questions, Medium = moderate difficulty, Hard = complex/analytical, Popular = commonly tested topics, Mixed = balanced selection across difficulty)
+
+Only sort and select questions. Never rewrite or invent questions.
+
+AVAILABLE MCQs:
+{mcq_block}
+
+AVAILABLE SHORT QUESTIONS:
+{short_block}
+
+AVAILABLE LONG QUESTIONS:
+{long_block}
+
+Return ONLY a valid JSON object with this exact structure:
+{{
+  "mcqs": [
+    {{
+      "id": 1,
+      "prompt": "Exact question text copied from above",
+      "options": [
+        {{"id": "A", "label": "Option A text"}},
+        {{"id": "B", "label": "Option B text"}},
+        {{"id": "C", "label": "Option C text"}},
+        {{"id": "D", "label": "Option D text"}}
+      ],
+      "answer": "A"
+    }}
+  ],
+  "short_questions": [
+    {{"id": 1, "question": "Exact question text copied from above"}}
+  ],
+  "long_questions": [
+    {{"id": 1, "question": "Exact question text copied from above"}}
+  ]
+}}
+
+Rules:
+- Copy question texts EXACTLY as provided — do not rephrase
+- If an MCQ in the source does not include A/B/C/D options, generate 4 plausible options and mark the correct answer
+- Select no more than what is actually available in each list; if fewer than requested are available, return all that exist
+- Do NOT include any text outside the JSON object"""
+
+    try:
+        raw = _chat(prompt)
+        result = _safe_json(raw)
+        result["mcqs"]            = result.get("mcqs", [])[:number_of_mcqs]
+        result["short_questions"] = result.get("short_questions", [])[:number_of_short_questions]
+        result["long_questions"]  = result.get("long_questions", [])[:number_of_long_questions]
+        return result
+    except Exception as e:
+        print(f"[AI] generate_paper_from_questions error: {e}")
+        return _fallback_select(
+            mcqs, short_questions, long_questions,
+            number_of_mcqs, number_of_short_questions, number_of_long_questions,
+        )
+
+
+def _fallback_select(
+    mcqs: List[str],
+    short_questions: List[str],
+    long_questions: List[str],
+    n_mcqs: int,
+    n_short: int,
+    n_long: int,
+) -> Dict:
+    """Simple slice-based fallback when LLM is unavailable."""
+    def make_mcq(text: str, idx: int) -> Dict:
+        return {
+            "id": idx + 1,
+            "prompt": text[:250],
+            "options": [
+                {"id": "A", "label": "Option A"},
+                {"id": "B", "label": "Option B"},
+                {"id": "C", "label": "Option C"},
+                {"id": "D", "label": "Option D"},
+            ],
+            "answer": "A",
+        }
+    return {
+        "mcqs":            [make_mcq(q, i) for i, q in enumerate(mcqs[:n_mcqs])],
+        "short_questions": [{"id": i + 1, "question": q[:400]} for i, q in enumerate(short_questions[:n_short])],
+        "long_questions":  [{"id": i + 1, "question": q[:600]} for i, q in enumerate(long_questions[:n_long])],
+    }
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUIZ GENERATION — spec-mandated: SELECT ONLY from verified store
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def generate_quiz_from_questions(
+    mcqs: List[str],
+    number_of_mcqs: int,
+    preference: str = "Mixed",
+) -> List[Dict]:
+    """
+    Select MCQs from provided list — LLM never invents.
+    Quiz generation ALWAYS uses the Verified Vector DB.
+
+    Returns list of MCQ objects with correct answers.
+    """
+    if not _client:
+        return _fallback_quiz_select(mcqs, number_of_mcqs)
+
+    mcq_block = "\n".join(f"{i+1}. {q}" for i, q in enumerate(mcqs)) or "None available."
+
+    prompt = f"""Use ONLY the supplied MCQs below.
+
+Select {number_of_mcqs} MCQs based upon preference: {preference}
+(Easy = simpler questions, Medium = moderate, Hard = complex/analytical, Popular = commonly tested topics, Mixed = balanced selection)
+
+Return selected MCQs along with their correct answers.
+
+Do not generate new MCQs. Copy question text exactly.
+
+AVAILABLE MCQs:
+{mcq_block}
+
+Return ONLY a valid JSON array:
+[
+  {{
+    "id": 1,
+    "prompt": "Exact MCQ text copied from above",
+    "options": [
+      {{"id": "A", "label": "Option A text"}},
+      {{"id": "B", "label": "Option B text"}},
+      {{"id": "C", "label": "Option C text"}},
+      {{"id": "D", "label": "Option D text"}}
+    ],
+    "answer": "B"
+  }}
+]
+
+Rules:
+- Copy MCQ text EXACTLY as provided — do not rephrase
+- If options are not embedded in the source text, generate 4 plausible options and mark the correct answer
+- Select no more than what is available; if fewer than {number_of_mcqs} exist, return all available
+- Do NOT include text outside the JSON array"""
+
+    try:
+        raw = _chat(prompt)
+        return _safe_json(raw)
+    except Exception as e:
+        print(f"[AI] generate_quiz_from_questions error: {e}")
+        return _fallback_quiz_select(mcqs, number_of_mcqs)
+
+
+def _fallback_quiz_select(mcqs: List[str], n_mcqs: int) -> List[Dict]:
+    """Simple slice-based fallback for quiz selection."""
+    result = []
+    for i, q in enumerate(mcqs[:n_mcqs]):
+        result.append({
+            "id": i + 1,
+            "prompt": q[:250],
+            "options": [
+                {"id": "A", "label": "Option A"},
+                {"id": "B", "label": "Option B"},
+                {"id": "C", "label": "Option C"},
+                {"id": "D", "label": "Option D"},
+            ],
+            "answer": "A",
+        })
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# QUESTION EXTRACTION  (for uploaded papers)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def extract_questions_with_llm(text: str) -> Dict[str, List[str]]:
+    """
+    Use LLM to extract MCQs, short questions, and long questions from
+    an uploaded paper's text. Falls back to empty lists if LLM unavailable.
+
+    Returns: {"mcqs": [...], "short_questions": [...], "long_questions": [...]}
+    """
+    if not _client:
+        return {"mcqs": [], "short_questions": [], "long_questions": []}
+
+    sample = text[:5000]  # limit to avoid token overflow
+
+    prompt = f"""You are an expert at parsing examination papers.
+
+Extract all questions from the following exam paper text and classify each as:
+- "mcq": Multiple-choice question (has options A/B/C/D or similar)
+- "short_question": Short-answer question (1–4 marks, brief answer expected)
+- "long_question": Long-answer question (requires detailed explanation, essay, derivation, or experiment)
+
+PAPER TEXT:
+\"\"\"
+{sample}
+\"\"\"
+
+Return ONLY a valid JSON object:
+{{
+  "mcqs": ["complete question text including options", ...],
+  "short_questions": ["complete question text", ...],
+  "long_questions": ["complete question text", ...]
+}}
+
+Rules:
+- Include the complete question text for each entry
+- For MCQs, embed the options in the text string (e.g., "What is X? A) a  B) b  C) c  D) d")
+- Do not include answers
+- If no questions of a type are found, return an empty array for that type
+- Do NOT include text outside the JSON"""
+
+    try:
+        raw = _chat(prompt)
+        result = _safe_json(raw)
+        return {
+            "mcqs":            result.get("mcqs",            []),
+            "short_questions": result.get("short_questions", []),
+            "long_questions":  result.get("long_questions",  []),
+        }
+    except Exception as e:
+        print(f"[AI] extract_questions_with_llm error: {e}")
+        return {"mcqs": [], "short_questions": [], "long_questions": []}
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FIELD NORMALISATION  (prevent duplicate country/class/subject names)
+# ═══════════════════════════════════════════════════════════════════════════════
+
 def normalize_field(value: str, existing_values: List[str], field_type: str = "value") -> str:
     """
     Use Mistral to decide if `value` is semantically the same as any existing value.

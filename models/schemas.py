@@ -61,6 +61,15 @@ class SearchResponse(BaseModel):
 
 class VerifiedQuizRequest(BaseModel):
     query: str = Field(..., min_length=3, description="Topic or concept to generate MCQs about")
+    # Optional spec fields — fully backward compatible (all optional)
+    country:      Optional[str] = None
+    category:     Optional[str] = None
+    class_name:   Optional[str] = Field(None, alias="class")
+    subject:      Optional[str] = None
+    number_of_mcqs: Optional[int] = Field(None, ge=1, le=50)
+    preference:   Optional[str] = Field(None, description="Easy | Medium | Hard | Popular | Mixed")
+
+    model_config = {"populate_by_name": True}
 
 
 class VerifiedQuizResponse(BaseModel):
@@ -74,6 +83,10 @@ class VerifiedPaperRequest(BaseModel):
     short_questions: int = Field(5, ge=0, le=30)
     long_questions: int = Field(3, ge=0, le=20)
     query: str = Field(..., min_length=3, description="Description of desired difficulty/focus, e.g. 'difficult, famous'")
+    # Optional spec fields — fully backward compatible
+    country:    Optional[str] = None
+    category:   Optional[str] = None
+    preference: Optional[str] = Field(None, description="Easy | Medium | Hard | Popular | Mixed")
 
     model_config = {"populate_by_name": True}
 
@@ -84,18 +97,42 @@ class VerifiedPaperResponse(BaseModel):
     long_questions: List[LongQuestion]
 
 
+# ─── Verified hierarchy endpoint ──────────────────────────────────────────────
+
+class VerifiedHierarchyResponse(BaseModel):
+    """
+    country → category → class_name → [subjects]
+    Example:
+    {
+      "Pakistan": {
+        "Punjab Boards": {
+          "Class 9": ["Biology", "Chemistry", "Physics"],
+          "Class 10": ["Biology", "Chemistry", "Physics"]
+        },
+        "Cambridge": {
+          "O Level": ["Biology", "Chemistry", "Physics"],
+          "A Level": ["Biology", "Chemistry", "Physics"]
+        }
+      }
+    }
+    """
+    hierarchy: Dict[str, Any]
+
+
 # ─── Unverified endpoints ─────────────────────────────────────────────────────
 
 class UnverifiedUploadResponse(BaseModel):
     accepted: bool
-    score: float        # 0.00 – 2.00 (or 0.00 if rejected)
+    score: float        # 0–100 uniqueness score (0 if rejected)
     reason: str         # empty string when accepted
+    filename: Optional[str] = None  # original filename (None if rejected before parsing)
 
 
 class ClassEntry(BaseModel):
     country: str
     class_name: str
     subjects: List[str]
+    category: Optional[str] = None  # additive — backward compatible
 
 
 class UnverifiedClassesResponse(BaseModel):
@@ -110,6 +147,9 @@ class UnverifiedPaperRequest(BaseModel):
     short_questions: int = Field(5, ge=0, le=30)
     long_questions: int = Field(3, ge=0, le=20)
     query: str = Field(..., min_length=3, description="Difficulty/focus descriptor")
+    # Optional spec fields — backward compatible
+    category:   Optional[str] = None
+    preference: Optional[str] = Field(None, description="Easy | Medium | Hard | Popular | Mixed")
 
     model_config = {"populate_by_name": True}
 

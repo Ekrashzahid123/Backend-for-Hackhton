@@ -1,13 +1,18 @@
 """
 Unverified data routes — upload, browse, and generate from community papers.
 
-Endpoints:
-  POST /unverified/upload-paper
-  GET  /unverified/classes
-  POST /unverified/generate-paper
+Endpoints (names/paths unchanged):
+  POST /unverified/upload-paper   — validate & store directly in Unverified Vector DB
+  GET  /unverified/classes        — metadata hierarchy
+  POST /unverified/generate-paper — generate paper from Unverified Vector DB
 """
 
+import hashlib
+import datetime
+from typing import List
+
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+
 from models.schemas import (
     UnverifiedUploadResponse,
     UnverifiedClassesResponse,
@@ -22,13 +27,13 @@ from models.schemas import (
 from services import vector_store, ai_service
 from services.ocr_service import extract_text
 from services.nlp_service import clean_text, extract_questions
-import hashlib
-from typing import List
 
 router = APIRouter(prefix="/unverified", tags=["unverified"])
 
 # Allowed file types
 _ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".txt"}
+# Reject if uniqueness score is below this threshold (%)
+_UNIQUENESS_THRESHOLD = 20.0
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -54,11 +59,18 @@ def _parse_long(raw: dict, idx: int) -> LongQuestion:
     return LongQuestion(id=raw.get("id", idx + 1), question=str(raw.get("question", "")))
 
 
-def _build_filter(country: str = None, class_name: str = None, subject: str = None) -> dict | None:
+def _build_filter(
+    country: str = None,
+    category: str = None,
+    class_name: str = None,
+    subject: str = None,
+) -> dict | None:
     """Build ChromaDB where filter."""
     conditions = []
     if country:
         conditions.append({"country": {"$eq": country}})
+    if category:
+        conditions.append({"category": {"$eq": category}})
     if class_name:
         conditions.append({"class_name": {"$eq": class_name}})
     if subject:
@@ -68,39 +80,6 @@ def _build_filter(country: str = None, class_name: str = None, subject: str = No
     if len(conditions) == 1:
         return conditions[0]
     return {"$and": conditions}
-
-
-def _questions_to_docs(
-    short_qs: list,
-    long_qs: list,
-    mcqs: list,
-    country: str,
-    class_name: str,
-    subject: str,
-) -> tuple[List[str], List[dict]]:
-    """Convert extracted question lists into (documents, metadatas) for ChromaDB."""
-    docs, metas = [], []
-    base_meta = {"country": country, "class_name": class_name, "subject": subject}
-
-    for q in mcqs:
-        text = q if isinstance(q, str) else q.get("text", "")
-        if text.strip():
-            docs.append(text)
-            metas.append({**base_meta, "question_type": "mcq"})
-
-    for q in short_qs:
-        text = q if isinstance(q, str) else q.get("text", "")
-        if text.strip():
-            docs.append(text)
-            metas.append({**base_meta, "question_type": "short"})
-
-    for q in long_qs:
-        text = q if isinstance(q, str) else q.get("text", "")
-        if text.strip():
-            docs.append(text)
-            metas.append({**base_meta, "question_type": "long"})
-
-    return docs, metas
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -113,84 +92,160 @@ async def upload_paper(
     country: str = Form(...),
     class_name: str = Form(..., alias="class"),
     subject: str = Form(...),
+    category: str = Form("General"),
 ):
     """
     Upload a community exam paper (PDF / DOCX / TXT).
-    Validates content with AI, scores uniqueness (0.00–2.00), stores in unverified vector store.
+    Papers are stored DIRECTLY in the Unverified Vector DB — no disk storage.
 
     Form fields:
-      - file:    the document
-      - class:   e.g. "O Level"
-      - subject: e.g. "Business"
-      - country: e.g. "Pakistan"
+      - file:     the document (PDF / DOCX / TXT)
+      - class:    e.g. "Class 10"
+      - subject:  e.g. "Physics"
+      - country:  e.g. "Pakistan"
+      - category: e.g. "Punjab Boards" (optional, defaults to "General")
+
+    Processing flow (spec-compliant):
+      Step 1: Read file bytes (no disk write)
+      Step 2: Extract text via appropriate parser
+      Step 3: Validate with LLM — reject if abusive/corrupt/not an exam paper
+      Step 4: Extract MCQ / short / long questions (LLM-assisted)
+      Step 5: Compute uniqueness score against Unverified Vector DB
+      Step 6: Decision — reject if uniqueness < threshold
+      Step 7: Store questions directly in Unverified Vector DB with full metadata
     """
-    # ── 1. Extension check ─────────────────────────────────────────────────────
-    filename = file.filename or ""
-    ext = "." + filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+    filename = file.filename or "unknown"
+
+    # ── Step 1: Extension check ────────────────────────────────────────────────
+    ext = ("." + filename.rsplit(".", 1)[-1].lower()) if "." in filename else ""
     if ext not in _ALLOWED_EXTENSIONS:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Unsupported file type '{ext}'. Allowed: PDF, DOCX, DOC, TXT.",
+        return UnverifiedUploadResponse(
+            accepted=False,
+            score=0.0,
+            reason=f"Unsupported file type '{ext}'. Allowed: PDF, DOCX, TXT.",
+            filename=filename,
         )
 
-    # ── 2. Read & extract text ────────────────────────────────────────────────
+    # ── Step 2: Extract text ───────────────────────────────────────────────────
     file_bytes = await file.read()
     raw_text = extract_text(file_bytes, filename)
 
     if not raw_text.strip():
         return UnverifiedUploadResponse(
             accepted=False,
-            score=0.00,
-            reason="Could not extract any text from the uploaded file.",
+            score=0.0,
+            reason="Could not extract any text from the uploaded file. File may be corrupted or image-only without OCR support.",
+            filename=filename,
         )
 
     cleaned = clean_text(raw_text)
 
-    # ── 3. AI validation ──────────────────────────────────────────────────────
+    # ── Step 3: AI Validation ─────────────────────────────────────────────────
     validation = ai_service.validate_paper(cleaned, country, class_name, subject)
     if not validation["valid"]:
         return UnverifiedUploadResponse(
             accepted=False,
-            score=0.00,
+            score=0.0,
             reason=validation["reason"],
+            filename=filename,
         )
 
-    # ── 4. Normalize country / class / subject (AI dedup) ────────────────────
-    existing = vector_store.get_existing_field_values()
-    norm_country = ai_service.normalize_field(country, existing["countries"], "country")
-    norm_class   = ai_service.normalize_field(class_name, existing["classes"], "class/level")
-    norm_subject = ai_service.normalize_field(subject, existing["subjects"], "subject")
+    # ── Step 4: Extract questions (LLM-assisted, fallback to heuristic) ───────
+    llm_extracted = ai_service.extract_questions_with_llm(cleaned)
+    mcqs_text      = llm_extracted.get("mcqs", [])
+    short_qs_text  = llm_extracted.get("short_questions", [])
+    long_qs_text   = llm_extracted.get("long_questions", [])
 
-    # ── 5. Extract questions ──────────────────────────────────────────────────
-    short_qs, long_qs, mcqs = extract_questions(cleaned)
-    total_questions = len(short_qs) + len(long_qs) + len(mcqs)
+    # NLP heuristic fallback if LLM extraction is empty
+    if not any([mcqs_text, short_qs_text, long_qs_text]):
+        short_qs_text, long_qs_text, mcqs_text = extract_questions(cleaned)
 
+    total_questions = len(mcqs_text) + len(short_qs_text) + len(long_qs_text)
     if total_questions == 0:
         return UnverifiedUploadResponse(
             accepted=False,
-            score=0.00,
+            score=0.0,
             reason="No recognisable questions could be extracted from this document.",
+            filename=filename,
         )
 
-    # ── 6. Build ChromaDB documents ───────────────────────────────────────────
-    docs, metas = _questions_to_docs(
-        short_qs, long_qs, mcqs, norm_country, norm_class, norm_subject
-    )
+    # ── Step 5: Normalize metadata & build vectors ────────────────────────────
+    existing = vector_store.get_existing_field_values()
+    norm_country  = ai_service.normalize_field(country,    existing["countries"], "country")
+    norm_class    = ai_service.normalize_field(class_name, existing["classes"],   "class/level")
+    norm_subject  = ai_service.normalize_field(subject,    existing["subjects"],  "subject")
 
-    # ── 7. Compute similarity / uniqueness score ──────────────────────────────
+    timestamp = datetime.datetime.utcnow().isoformat()
+    paper_id  = hashlib.sha256(cleaned.encode("utf-8")).hexdigest()[:16]
+
+    base_meta = {
+        "country":    norm_country,
+        "category":   category,
+        "class_name": norm_class,
+        "subject":    norm_subject,
+        "paper_type": "unverified",
+        "filename":   filename,
+        "paper_id":   paper_id,
+        "timestamp":  timestamp,
+    }
+
+    docs:  List[str]  = []
+    metas: List[dict] = []
+
+    for q in mcqs_text:
+        t = q if isinstance(q, str) else q.get("text", "")
+        if t.strip():
+            docs.append(t.strip())
+            metas.append({**base_meta, "question_type": "mcq"})
+
+    for q in short_qs_text:
+        t = q if isinstance(q, str) else q.get("text", "")
+        if t.strip():
+            docs.append(t.strip())
+            metas.append({**base_meta, "question_type": "short"})
+
+    for q in long_qs_text:
+        t = q if isinstance(q, str) else q.get("text", "")
+        if t.strip():
+            docs.append(t.strip())
+            metas.append({**base_meta, "question_type": "long"})
+
+    # ── Step 5: Uniqueness score ───────────────────────────────────────────────
     score = vector_store.compute_similarity_score(docs)
 
-    # ── 8. Deduplicate via hash before storing ───────────────────────────────
-    doc_hash = hashlib.sha256(cleaned.encode("utf-8")).hexdigest()
-    ids = [f"{doc_hash}_{i}" for i in range(len(docs))]
+    # ── Step 6: Decision ───────────────────────────────────────────────────────
+    if score < _UNIQUENESS_THRESHOLD:
+        return UnverifiedUploadResponse(
+            accepted=False,
+            score=round(score, 2),
+            reason=(
+                f"Paper is too similar to existing content "
+                f"(uniqueness score: {score:.1f}%). "
+                f"Minimum required uniqueness: {_UNIQUENESS_THRESHOLD}%."
+            ),
+            filename=filename,
+        )
 
-    # ── 9. Store in vector DB ─────────────────────────────────────────────────
+    # ── Step 7: Store directly in Unverified Vector DB ────────────────────────
+    ids = [f"{paper_id}_{i}" for i in range(len(docs))]
     vector_store.add_to_unverified(docs, metas, ids)
 
-    # ── 10. Save metadata to JSON catalogue ──────────────────────────────────
-    vector_store.save_unverified_paper_meta(norm_country, norm_class, norm_subject, score)
+    # Persist metadata to JSON catalogue for hierarchy browsing
+    vector_store.save_unverified_paper_meta(
+        country=norm_country,
+        class_name=norm_class,
+        subject=norm_subject,
+        score=score,
+        category=category,
+        filename=filename,
+    )
 
-    return UnverifiedUploadResponse(accepted=True, score=score, reason="")
+    return UnverifiedUploadResponse(
+        accepted=True,
+        score=round(score, 2),
+        reason="",
+        filename=filename,
+    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -200,12 +255,17 @@ async def upload_paper(
 @router.get("/classes", response_model=UnverifiedClassesResponse)
 async def get_classes():
     """
-    Returns all uploaded papers' countries, classes, and subjects.
-    Used by frontend to populate filter dropdowns.
+    Returns metadata hierarchy from the Unverified Vector DB.
+    Country → Category → Class → Subjects (no question content).
     """
     raw = vector_store.get_all_unverified_classes()
     entries = [
-        ClassEntry(country=r["country"], class_name=r["class_name"], subjects=r["subjects"])
+        ClassEntry(
+            country=r["country"],
+            class_name=r["class_name"],
+            subjects=r["subjects"],
+            category=r.get("category"),
+        )
         for r in raw
     ]
     return UnverifiedClassesResponse(classes=entries)
@@ -218,31 +278,40 @@ async def get_classes():
 @router.post("/generate-paper", response_model=UnverifiedPaperResponse)
 async def generate_paper(req: UnverifiedPaperRequest):
     """
-    Generate an exam paper from the unverified (community) vector store.
-    Body: {
-      "country": "Pakistan", "class": "O Level", "subject": "Business",
-      "mcqs": 10, "short_questions": 5, "long_questions": 3,
-      "query": "famous, easy"
-    }
-    """
-    where = _build_filter(req.country, req.class_name, req.subject)
+    Generate an exam paper from the UNVERIFIED (community) vector store.
 
-    chunks = vector_store.query_unverified(
-        query=f"{req.query} {req.subject} {req.class_name}",
-        n_results=30,
-        where=where,
+    Flow:
+      1. Filter Unverified DB by metadata (country, category, class, subject)
+      2. Retrieve ALL matching MCQs / Short / Long questions
+      3. Pass ALL to LLM — select & rank only, never invent
+    """
+    # Step 1 + 2: Metadata-filtered retrieval
+    questions = vector_store.get_unverified_questions_by_type(
+        country=req.country,
+        category=req.category,
+        class_name=req.class_name,
+        subject=req.subject,
     )
 
-    # Fallback: relax filters if not enough results
-    if len(chunks) < 5 and where:
-        subject_filter = {"subject": {"$eq": req.subject}} if req.subject else None
+    # Fallback: relax to semantic search if metadata yields nothing
+    if not any(questions.values()):
+        where = _build_filter(req.country, req.category, req.class_name, req.subject)
         chunks = vector_store.query_unverified(
-            query=f"{req.query} {req.subject}",
-            n_results=30,
-            where=subject_filter,
+            query=f"{req.query} {req.subject} {req.class_name}",
+            n_results=50,
+            where=where,
         )
+        for c in chunks:
+            qt = c.get("metadata", {}).get("question_type", "")
+            text = c["text"]
+            if qt == "mcq":
+                questions["mcqs"].append(text)
+            elif qt == "long":
+                questions["long"].append(text)
+            else:
+                questions["short"].append(text)
 
-    if not chunks:
+    if not any(questions.values()):
         raise HTTPException(
             status_code=404,
             detail=(
@@ -252,13 +321,16 @@ async def generate_paper(req: UnverifiedPaperRequest):
             ),
         )
 
-    raw = ai_service.generate_paper_sections(
-        query=req.query,
-        retrieved_chunks=chunks,
-        num_mcqs=req.mcqs,
-        num_short=req.short_questions,
-        num_long=req.long_questions,
-        paper_style="general",
+    # Step 3: LLM selects & ranks — never invents
+    preference = req.preference or req.query
+    raw = ai_service.generate_paper_from_questions(
+        mcqs=questions["mcqs"],
+        short_questions=questions["short"],
+        long_questions=questions["long"],
+        number_of_mcqs=req.mcqs,
+        number_of_short_questions=req.short_questions,
+        number_of_long_questions=req.long_questions,
+        preference=preference,
     )
 
     if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):
