@@ -126,15 +126,8 @@ class UnverifiedUploadResponse(BaseModel):
     filename: Optional[str] = None  # original filename (None if rejected before parsing)
 
 
-class ClassEntry(BaseModel):
-    country: str
-    class_name: str
-    subjects: List[str]
-    category: Optional[str] = None  # additive — backward compatible
-
-
 class UnverifiedClassesResponse(BaseModel):
-    classes: List[ClassEntry]
+    hierarchy: Dict[str, Any]
 
 
 class UnverifiedPaperRequest(BaseModel):

@@ -81,12 +81,18 @@ async def generate_quiz(req: VerifiedQuizRequest):
       2. Retrieve ALL matching MCQs
       3. Pass ALL MCQs to LLM — select & rank only, never invent
     """
+    # Normalize metadata against existing values in DB
+    existing = vector_store.get_verified_field_values()
+    norm_country = ai_service.normalize_field(req.country, existing["countries"], "country") if req.country else None
+    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
+    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
+
     # Step 1 + 2: Metadata-filtered retrieval of all verified MCQs
     questions = vector_store.get_verified_questions_by_type(
-        country=req.country,
+        country=norm_country,
         category=req.category,
-        class_name=req.class_name,
-        subject=req.subject,
+        class_name=norm_class,
+        subject=norm_subject,
     )
     mcqs = questions["mcqs"]
 
@@ -141,12 +147,18 @@ async def generate_paper_cambridge(req: VerifiedPaperRequest):
       2. Retrieve ALL matching MCQs / Short / Long questions separately
       3. Pass ALL to LLM — select & rank only, never invent
     """
+    # Normalize metadata against existing values in DB
+    existing = vector_store.get_verified_field_values()
+    norm_country = ai_service.normalize_field(req.country, existing["countries"], "country") if req.country else None
+    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
+    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
+
     # Step 1 + 2: Metadata-filtered retrieval
     questions = vector_store.get_verified_questions_by_type(
-        country=req.country,
+        country=norm_country,
         category=req.category or "Cambridge",
-        class_name=req.class_name,
-        subject=req.subject,
+        class_name=norm_class,
+        subject=norm_subject,
     )
 
     # Fallback: semantic search when metadata yields nothing
@@ -210,12 +222,18 @@ async def generate_paper_boards(req: VerifiedPaperRequest):
       2. Retrieve ALL matching MCQs / Short / Long questions separately
       3. Pass ALL to LLM — select & rank only, never invent
     """
+    # Normalize metadata against existing values in DB
+    existing = vector_store.get_verified_field_values()
+    norm_country = ai_service.normalize_field(req.country or "Pakistan", existing["countries"], "country")
+    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
+    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
+
     # Step 1 + 2: Metadata-filtered retrieval
     questions = vector_store.get_verified_questions_by_type(
-        country=req.country or "Pakistan",
+        country=norm_country,
         category=req.category,
-        class_name=req.class_name,
-        subject=req.subject,
+        class_name=norm_class,
+        subject=norm_subject,
     )
 
     # Fallback: semantic search when metadata yields nothing

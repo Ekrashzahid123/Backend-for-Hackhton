@@ -16,7 +16,6 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from models.schemas import (
     UnverifiedUploadResponse,
     UnverifiedClassesResponse,
-    ClassEntry,
     UnverifiedPaperRequest,
     UnverifiedPaperResponse,
     MCQItem,
@@ -256,19 +255,12 @@ async def upload_paper(
 async def get_classes():
     """
     Returns metadata hierarchy from the Unverified Vector DB.
-    Country → Category → Class → Subjects (no question content).
+    Structure mirrors the verified /verified/papers endpoint:
+      Country → Category → Class → [Subjects]
+    No question content is returned.
     """
-    raw = vector_store.get_all_unverified_classes()
-    entries = [
-        ClassEntry(
-            country=r["country"],
-            class_name=r["class_name"],
-            subjects=r["subjects"],
-            category=r.get("category"),
-        )
-        for r in raw
-    ]
-    return UnverifiedClassesResponse(classes=entries)
+    hierarchy = vector_store.get_unverified_hierarchy()
+    return UnverifiedClassesResponse(hierarchy=hierarchy if hierarchy else {})
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -285,19 +277,25 @@ async def generate_paper(req: UnverifiedPaperRequest):
       2. Retrieve ALL matching MCQs / Short / Long questions
       3. Pass ALL to LLM — select & rank only, never invent
     """
+    # Normalize metadata against existing values in DB
+    existing = vector_store.get_existing_field_values()
+    norm_country = ai_service.normalize_field(req.country, existing["countries"], "country") if req.country else None
+    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
+    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
+
     # Step 1 + 2: Metadata-filtered retrieval
     questions = vector_store.get_unverified_questions_by_type(
-        country=req.country,
+        country=norm_country,
         category=req.category,
-        class_name=req.class_name,
-        subject=req.subject,
+        class_name=norm_class,
+        subject=norm_subject,
     )
 
     # Fallback: relax to semantic search if metadata yields nothing
     if not any(questions.values()):
-        where = _build_filter(req.country, req.category, req.class_name, req.subject)
+        where = _build_filter(norm_country, req.category, norm_class, norm_subject)
         chunks = vector_store.query_unverified(
-            query=f"{req.subject} {req.class_name}",
+            query=f"{norm_subject} {norm_class}",
             n_results=50,
             where=where,
         )

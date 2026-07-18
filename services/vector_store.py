@@ -389,35 +389,6 @@ def save_unverified_paper_meta(
     _save_meta(meta)
 
 
-def get_all_unverified_classes() -> List[Dict]:
-    """
-    Returns {country, category, class_name, subjects} objects for the
-    GET /unverified/classes endpoint — reads from ChromaDB hierarchy first.
-    """
-    hierarchy = get_unverified_hierarchy()
-    if hierarchy:
-        result = []
-        for country, cats in hierarchy.items():
-            for category, classes in cats.items():
-                for class_name, subjects in classes.items():
-                    result.append({
-                        "country":    country,
-                        "category":   category,
-                        "class_name": class_name,
-                        "subjects":   subjects,
-                    })
-        return result
-
-    # JSON meta fallback
-    meta = _load_meta()
-    catalogue: Dict[tuple, set] = {}
-    for entry in meta:
-        key = (entry.get("country", ""), entry.get("class_name", ""))
-        catalogue.setdefault(key, set()).add(entry.get("subject", ""))
-    return [
-        {"country": c, "category": "General", "class_name": cn, "subjects": sorted(subs)}
-        for (c, cn), subs in catalogue.items()
-    ]
 
 
 def get_existing_field_values() -> Dict[str, List[str]]:
@@ -427,3 +398,22 @@ def get_existing_field_values() -> Dict[str, List[str]]:
     classes   = list({e.get("class_name", "") for e in meta if e.get("class_name")})
     subjects  = list({e.get("subject", "")    for e in meta if e.get("subject")})
     return {"countries": countries, "classes": classes, "subjects": subjects}
+
+
+def get_verified_field_values() -> Dict[str, List[str]]:
+    """Return existing distinct countries, classes, subjects in verified store."""
+    hierarchy = get_verified_hierarchy()
+    countries = list(hierarchy.keys())
+    classes = set()
+    subjects = set()
+    for cats in hierarchy.values():
+        for cls_dict in cats.values():
+            for cls_name, subs in cls_dict.items():
+                classes.add(cls_name)
+                for s in subs:
+                    subjects.add(s)
+    return {
+        "countries": countries,
+        "classes": list(classes),
+        "subjects": list(subjects)
+    }

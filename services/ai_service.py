@@ -569,11 +569,19 @@ def normalize_field(value: str, existing_values: List[str], field_type: str = "v
     if not existing_values:
         return value.strip().title()
 
+    val_lower = value.strip().lower()
+    # 1. Exact match (case-insensitive)
+    for ev in existing_values:
+        if ev.strip().lower() == val_lower:
+            return ev
+
+    # 2. Prefix / abbreviation match (e.g. "math" -> "Mathematics")
+    for ev in existing_values:
+        ev_lower = ev.strip().lower()
+        if ev_lower.startswith(val_lower) or val_lower.startswith(ev_lower):
+            return ev
+
     if not _client:
-        val_lower = value.strip().lower()
-        for ev in existing_values:
-            if ev.strip().lower() == val_lower:
-                return ev
         return value.strip().title()
 
     prompt = f"""You are a data normalisation assistant.
