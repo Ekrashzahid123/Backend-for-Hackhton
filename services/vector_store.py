@@ -328,16 +328,16 @@ def get_unverified_hierarchy() -> Dict[str, Any]:
 
 def compute_similarity_score(new_documents: List[str]) -> float:
     """
-    Compute uniqueness score in range [0, 100].
-    uniqueness_score = 100 - (average_max_similarity * 100)
+    Compute uniqueness score in range [0, 5].
+    uniqueness_score = 5 - (average_max_similarity * 5)
 
-    Example: avg similarity 90%  → uniqueness = 10
-             avg similarity 25%  → uniqueness = 75
-    Returns 100.0 if corpus is empty (first upload = fully unique).
+    Example: avg similarity 90%  → uniqueness = 0.5
+             avg similarity 25%  → uniqueness = 3.75
+    Returns 5.0 if corpus is empty (first upload = fully unique).
     """
     count = unverified_col.count()
     if count == 0:
-        return 100.0
+        return 5.0
 
     max_similarities = []
     for doc in new_documents[:10]:  # sample up to 10 docs for speed
@@ -355,11 +355,12 @@ def compute_similarity_score(new_documents: List[str]) -> float:
             pass
 
     if not max_similarities:
-        return 100.0
+        return 5.0
 
     avg_max_sim = sum(max_similarities) / len(max_similarities)
-    score = (1.0 - avg_max_sim) * 100.0
-    return round(max(0.0, min(100.0, score)), 2)
+    score = (1.0 - avg_max_sim) * 5.0
+    return round(max(0.0, min(5.0, score)), 2)
+
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

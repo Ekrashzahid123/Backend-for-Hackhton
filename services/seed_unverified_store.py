@@ -1065,7 +1065,7 @@ def seed_unverified_store() -> None:
                 country=country,
                 class_name=class_name,
                 subject=subject,
-                score=75.0,   # seed papers have a default uniqueness score
+                score=3.75,   # seed papers have a default uniqueness score (out of 5.0)
                 category=category,
                 filename=f"{paper_id}.pdf",
             )

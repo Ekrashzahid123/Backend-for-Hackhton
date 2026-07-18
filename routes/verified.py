@@ -92,7 +92,8 @@ async def generate_quiz(req: VerifiedQuizRequest):
 
     # Fallback: semantic search if metadata filters yield no results
     if not mcqs:
-        chunks = vector_store.query_verified(query=req.query, n_results=50)
+        fallback_query = f"{req.subject or ''} {req.class_name or ''}".strip() or "exam questions"
+        chunks = vector_store.query_verified(query=fallback_query, n_results=50)
         mcqs = [c["text"] for c in chunks
                 if c.get("metadata", {}).get("question_type") == "mcq"]
         # If still empty, use all chunks
@@ -151,7 +152,7 @@ async def generate_paper_cambridge(req: VerifiedPaperRequest):
     # Fallback: semantic search when metadata yields nothing
     if not any(questions.values()):
         chunks = vector_store.query_verified(
-            query=f"{req.query} {req.subject} {req.class_name}",
+            query=f"{req.subject} {req.class_name}",
             n_results=50,
             where={"class_name": {"$eq": req.class_name}} if req.class_name else None,
         )
@@ -174,7 +175,7 @@ async def generate_paper_cambridge(req: VerifiedPaperRequest):
         )
 
     # Step 3: LLM selects & ranks — Cambridge style
-    preference = req.preference or req.query
+    preference = req.preference or "Mixed"
     raw = ai_service.generate_paper_from_questions(
         mcqs=questions["mcqs"],
         short_questions=questions["short"],
@@ -220,7 +221,7 @@ async def generate_paper_boards(req: VerifiedPaperRequest):
     # Fallback: semantic search when metadata yields nothing
     if not any(questions.values()):
         chunks = vector_store.query_verified(
-            query=f"{req.query} {req.subject} {req.class_name}",
+            query=f"{req.subject} {req.class_name}",
             n_results=50,
             where={"class_name": {"$eq": req.class_name}} if req.class_name else None,
         )
@@ -243,7 +244,7 @@ async def generate_paper_boards(req: VerifiedPaperRequest):
         )
 
     # Step 3: LLM selects & ranks — Boards style
-    preference = req.preference or req.query
+    preference = req.preference or "Mixed"
     raw = ai_service.generate_paper_from_questions(
         mcqs=questions["mcqs"],
         short_questions=questions["short"],

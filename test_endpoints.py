@@ -25,7 +25,7 @@ if __name__ == "__main__":
     test_endpoint("GET", "/")
 
     # Test Generate Quiz
-    test_endpoint("POST", "/verified/generate-quiz", {"query": "Physics basics"})
+    test_endpoint("POST", "/verified/generate-quiz", {"subject": "Physics"})
 
     # Test Generate Paper
     test_endpoint("POST", "/verified/generate-paper/cambridge", {
@@ -33,6 +33,5 @@ if __name__ == "__main__":
         "subject": "Physics",
         "mcqs": 5,
         "short_questions": 2,
-        "long_questions": 1,
-        "query": "motion and force"
+        "long_questions": 1
     })

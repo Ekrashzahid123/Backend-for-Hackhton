@@ -60,7 +60,6 @@ class SearchResponse(BaseModel):
 # ─── Verified endpoints ───────────────────────────────────────────────────────
 
 class VerifiedQuizRequest(BaseModel):
-    query: str = Field(..., min_length=3, description="Topic or concept to generate MCQs about")
     # Optional spec fields — fully backward compatible (all optional)
     country:      Optional[str] = None
     category:     Optional[str] = None
@@ -82,7 +81,6 @@ class VerifiedPaperRequest(BaseModel):
     mcqs: int = Field(10, ge=1, le=50)
     short_questions: int = Field(5, ge=0, le=30)
     long_questions: int = Field(3, ge=0, le=20)
-    query: str = Field(..., min_length=3, description="Description of desired difficulty/focus, e.g. 'difficult, famous'")
     # Optional spec fields — fully backward compatible
     country:    Optional[str] = None
     category:   Optional[str] = None
@@ -123,7 +121,7 @@ class VerifiedHierarchyResponse(BaseModel):
 
 class UnverifiedUploadResponse(BaseModel):
     accepted: bool
-    score: float        # 0–100 uniqueness score (0 if rejected)
+    score: float        # 0–5 uniqueness score (0 if rejected)
     reason: str         # empty string when accepted
     filename: Optional[str] = None  # original filename (None if rejected before parsing)
 
@@ -146,7 +144,6 @@ class UnverifiedPaperRequest(BaseModel):
     mcqs: int = Field(10, ge=1, le=50)
     short_questions: int = Field(5, ge=0, le=30)
     long_questions: int = Field(3, ge=0, le=20)
-    query: str = Field(..., min_length=3, description="Difficulty/focus descriptor")
     # Optional spec fields — backward compatible
     category:   Optional[str] = None
     preference: Optional[str] = Field(None, description="Easy | Medium | Hard | Popular | Mixed")

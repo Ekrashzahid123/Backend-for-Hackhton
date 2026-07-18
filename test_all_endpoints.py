@@ -56,7 +56,6 @@ if __name__ == "__main__":
     
     # 3. Generate quiz from verified store (O Level Physics)
     test_post("/verified/generate-quiz", {
-        "query": "motion and force",
         "country": "Pakistan",
         "category": "Cambridge",
         "class": "O Level",
@@ -72,7 +71,6 @@ if __name__ == "__main__":
         "mcqs": 3,
         "short_questions": 2,
         "long_questions": 1,
-        "query": "bonding and molecular mass",
         "country": "Pakistan",
         "category": "Cambridge",
         "preference": "Medium"
@@ -85,7 +83,6 @@ if __name__ == "__main__":
         "mcqs": 4,
         "short_questions": 3,
         "long_questions": 1,
-        "query": "electricity, current and Ohm's law",
         "country": "Pakistan",
         "category": "Punjab Boards",
         "preference": "Easy"
@@ -127,7 +124,7 @@ if __name__ == "__main__":
         "mcqs": 2,
         "short_questions": 2,
         "long_questions": 1,
-        "query": "moles and physical change"
+        "preference": "Mixed"
     })
     
     print("\n=== SYSTEM TEST COMPLETED ===")

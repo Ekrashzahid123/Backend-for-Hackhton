@@ -32,8 +32,8 @@ router = APIRouter(prefix="/unverified", tags=["unverified"])
 
 # Allowed file types
 _ALLOWED_EXTENSIONS = {".pdf", ".docx", ".doc", ".txt"}
-# Reject if uniqueness score is below this threshold (%)
-_UNIQUENESS_THRESHOLD = 20.0
+# Reject if uniqueness score is below this threshold (out of 5.0)
+_UNIQUENESS_THRESHOLD = 1.0
 
 
 # ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -220,8 +220,8 @@ async def upload_paper(
             score=round(score, 2),
             reason=(
                 f"Paper is too similar to existing content "
-                f"(uniqueness score: {score:.1f}%). "
-                f"Minimum required uniqueness: {_UNIQUENESS_THRESHOLD}%."
+                f"(uniqueness score: {score:.2f}/5). "
+                f"Minimum required uniqueness: {_UNIQUENESS_THRESHOLD}/5."
             ),
             filename=filename,
         )
@@ -297,7 +297,7 @@ async def generate_paper(req: UnverifiedPaperRequest):
     if not any(questions.values()):
         where = _build_filter(req.country, req.category, req.class_name, req.subject)
         chunks = vector_store.query_unverified(
-            query=f"{req.query} {req.subject} {req.class_name}",
+            query=f"{req.subject} {req.class_name}",
             n_results=50,
             where=where,
         )
@@ -316,13 +316,12 @@ async def generate_paper(req: UnverifiedPaperRequest):
             status_code=404,
             detail=(
                 f"No unverified data found for country='{req.country}', "
-                f"class='{req.class_name}', subject='{req.subject}'. "
-                "Please upload papers first."
+                f"class='{req.class_name}', subject='{req.subject}'."
             ),
         )
 
     # Step 3: LLM selects & ranks — never invents
-    preference = req.preference or req.query
+    preference = req.preference or "Mixed"
     raw = ai_service.generate_paper_from_questions(
         mcqs=questions["mcqs"],
         short_questions=questions["short"],

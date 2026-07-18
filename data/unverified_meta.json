@@ -4,458 +4,458 @@
     "category": "Board Exam",
     "class_name": "O Level",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_board_olevel_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.698182"
+    "timestamp": "2026-07-18T18:00:33.817949"
   },
   {
     "country": "UK",
     "category": "Board Exam",
     "class_name": "A Level",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_board_alevel_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.698748"
+    "timestamp": "2026-07-18T18:00:33.817949"
   },
   {
     "country": "UK",
     "category": "Board Exam",
     "class_name": "A Level",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_board_alevel_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.698748"
+    "timestamp": "2026-07-18T18:00:33.817949"
   },
   {
     "country": "UK",
     "category": "Board Exam",
     "class_name": "O Level",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_board_olevel_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.699291"
+    "timestamp": "2026-07-18T18:00:33.818947"
   },
   {
     "country": "UK",
     "category": "Mid Term",
     "class_name": "A Level",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_mid_alevel_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.699836"
+    "timestamp": "2026-07-18T18:00:33.818947"
   },
   {
     "country": "UK",
     "category": "Mid Term",
     "class_name": "O Level",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_mid_olevel_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.699836"
+    "timestamp": "2026-07-18T18:00:33.819945"
   },
   {
     "country": "UK",
     "category": "Final Term",
     "class_name": "A Level",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_final_alevel_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.700387"
+    "timestamp": "2026-07-18T18:00:33.820496"
   },
   {
     "country": "UK",
     "category": "Final Term",
     "class_name": "O Level",
     "subject": "Computer Science",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_final_olevel_cs_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.700929"
+    "timestamp": "2026-07-18T18:00:33.820496"
   },
   {
     "country": "UK",
     "category": "Quiz",
     "class_name": "A Level",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_quiz_alevel_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.700929"
+    "timestamp": "2026-07-18T18:00:33.820496"
   },
   {
     "country": "UK",
     "category": "Quiz",
     "class_name": "O Level",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "uk_quiz_olevel_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.701472"
+    "timestamp": "2026-07-18T18:00:33.821491"
   },
   {
     "country": "USA",
     "category": "Board Exam",
     "class_name": "Grade 11",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_board_g11_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.702017"
+    "timestamp": "2026-07-18T18:00:33.821491"
   },
   {
     "country": "USA",
     "category": "Board Exam",
     "class_name": "Grade 12",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_board_g12_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.702017"
+    "timestamp": "2026-07-18T18:00:33.822464"
   },
   {
     "country": "USA",
     "category": "Board Exam",
     "class_name": "Grade 10",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_board_g10_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.702562"
+    "timestamp": "2026-07-18T18:00:33.822764"
   },
   {
     "country": "USA",
     "category": "Board Exam",
     "class_name": "Grade 12",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_board_g12_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.703076"
+    "timestamp": "2026-07-18T18:00:33.822764"
   },
   {
     "country": "USA",
     "category": "Mid Term",
     "class_name": "Grade 11",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_mid_g11_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.703625"
+    "timestamp": "2026-07-18T18:00:33.823845"
   },
   {
     "country": "USA",
     "category": "Mid Term",
     "class_name": "Grade 10",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_mid_g10_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.704177"
+    "timestamp": "2026-07-18T18:00:33.823845"
   },
   {
     "country": "USA",
     "category": "Final Term",
     "class_name": "Grade 12",
     "subject": "Computer Science",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_final_g12_cs_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.704684"
+    "timestamp": "2026-07-18T18:00:33.824845"
   },
   {
     "country": "USA",
     "category": "Final Term",
     "class_name": "Grade 11",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_final_g11_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.705239"
+    "timestamp": "2026-07-18T18:00:33.824845"
   },
   {
     "country": "USA",
     "category": "Quiz",
     "class_name": "Grade 11",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_quiz_g11_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.705746"
+    "timestamp": "2026-07-18T18:00:33.825842"
   },
   {
     "country": "USA",
     "category": "Quiz",
     "class_name": "Grade 10",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "usa_quiz_g10_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.706294"
+    "timestamp": "2026-07-18T18:00:33.825842"
   },
   {
     "country": "India",
     "category": "Board Exam",
     "class_name": "Class 10",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_board_c10_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.706797"
+    "timestamp": "2026-07-18T18:00:33.826840"
   },
   {
     "country": "India",
     "category": "Board Exam",
     "class_name": "Class 12",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_board_c12_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.707357"
+    "timestamp": "2026-07-18T18:00:33.826840"
   },
   {
     "country": "India",
     "category": "Board Exam",
     "class_name": "Class 11",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_board_c11_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.707900"
+    "timestamp": "2026-07-18T18:00:33.827838"
   },
   {
     "country": "India",
     "category": "Board Exam",
     "class_name": "Class 12",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_board_c12_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.707900"
+    "timestamp": "2026-07-18T18:00:33.827838"
   },
   {
     "country": "India",
     "category": "Mid Term",
     "class_name": "Class 10",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_mid_c10_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.708899"
+    "timestamp": "2026-07-18T18:00:33.828834"
   },
   {
     "country": "India",
     "category": "Mid Term",
     "class_name": "Class 11",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_mid_c11_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.710584"
+    "timestamp": "2026-07-18T18:00:33.829872"
   },
   {
     "country": "India",
     "category": "Final Term",
     "class_name": "Class 12",
     "subject": "Computer Science",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_final_c12_cs_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.710584"
+    "timestamp": "2026-07-18T18:00:33.830516"
   },
   {
     "country": "India",
     "category": "Final Term",
     "class_name": "Class 10",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_final_c10_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.711583"
+    "timestamp": "2026-07-18T18:00:33.831071"
   },
   {
     "country": "India",
     "category": "Quiz",
     "class_name": "Class 11",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_quiz_c11_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.711583"
+    "timestamp": "2026-07-18T18:00:33.831071"
   },
   {
     "country": "India",
     "category": "Quiz",
     "class_name": "Class 12",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "india_quiz_c12_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.712580"
+    "timestamp": "2026-07-18T18:00:33.832087"
   },
   {
     "country": "Australia",
     "category": "Board Exam",
     "class_name": "Year 12",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_board_y12_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.713578"
+    "timestamp": "2026-07-18T18:00:33.833059"
   },
   {
     "country": "Australia",
     "category": "Board Exam",
     "class_name": "Year 11",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_board_y11_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.713578"
+    "timestamp": "2026-07-18T18:00:33.834090"
   },
   {
     "country": "Australia",
     "category": "Board Exam",
     "class_name": "Year 10",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_board_y10_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.714589"
+    "timestamp": "2026-07-18T18:00:33.835053"
   },
   {
     "country": "Australia",
     "category": "Board Exam",
     "class_name": "Year 12",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_board_y12_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.715572"
+    "timestamp": "2026-07-18T18:00:33.836049"
   },
   {
     "country": "Australia",
     "category": "Mid Term",
     "class_name": "Year 12",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_mid_y12_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.715572"
+    "timestamp": "2026-07-18T18:00:33.836049"
   },
   {
     "country": "Australia",
     "category": "Mid Term",
     "class_name": "Year 11",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_mid_y11_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.716570"
+    "timestamp": "2026-07-18T18:00:33.837047"
   },
   {
     "country": "Australia",
     "category": "Final Term",
     "class_name": "Year 12",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_final_y12_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.717567"
+    "timestamp": "2026-07-18T18:00:33.838076"
   },
   {
     "country": "Australia",
     "category": "Final Term",
     "class_name": "Year 10",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_final_y10_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.718564"
+    "timestamp": "2026-07-18T18:00:33.838076"
   },
   {
     "country": "Australia",
     "category": "Quiz",
     "class_name": "Year 12",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_quiz_y12_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.719562"
+    "timestamp": "2026-07-18T18:00:33.839042"
   },
   {
     "country": "Australia",
     "category": "Quiz",
     "class_name": "Year 11",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "aus_quiz_y11_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.720560"
+    "timestamp": "2026-07-18T18:00:33.840039"
   },
   {
     "country": "Canada",
     "category": "Board Exam",
     "class_name": "Grade 12",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_board_g12_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.720560"
+    "timestamp": "2026-07-18T18:00:33.841070"
   },
   {
     "country": "Canada",
     "category": "Board Exam",
     "class_name": "Grade 11",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_board_g11_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.721556"
+    "timestamp": "2026-07-18T18:00:33.841762"
   },
   {
     "country": "Canada",
     "category": "Board Exam",
     "class_name": "Grade 10",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_board_g10_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.722554"
+    "timestamp": "2026-07-18T18:00:33.842785"
   },
   {
     "country": "Canada",
     "category": "Board Exam",
     "class_name": "Grade 12",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_board_g12_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.723551"
+    "timestamp": "2026-07-18T18:00:33.843779"
   },
   {
     "country": "Canada",
     "category": "Mid Term",
     "class_name": "Grade 12",
     "subject": "Computer Science",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_mid_g12_cs_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.724548"
+    "timestamp": "2026-07-18T18:00:33.844746"
   },
   {
     "country": "Canada",
     "category": "Mid Term",
     "class_name": "Grade 11",
     "subject": "Physics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_mid_g11_phy_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.725546"
+    "timestamp": "2026-07-18T18:00:33.845774"
   },
   {
     "country": "Canada",
     "category": "Final Term",
     "class_name": "Grade 11",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_final_g11_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.727541"
+    "timestamp": "2026-07-18T18:00:33.846778"
   },
   {
     "country": "Canada",
     "category": "Final Term",
     "class_name": "Grade 10",
     "subject": "Chemistry",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_final_g10_chem_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.728544"
+    "timestamp": "2026-07-18T18:00:33.847775"
   },
   {
     "country": "Canada",
     "category": "Quiz",
     "class_name": "Grade 12",
     "subject": "Mathematics",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_quiz_g12_math_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.729535"
+    "timestamp": "2026-07-18T18:00:33.848735"
   },
   {
     "country": "Canada",
     "category": "Quiz",
     "class_name": "Grade 11",
     "subject": "Biology",
-    "score": 75.0,
+    "score": 3.75,
     "filename": "can_quiz_g11_bio_01.pdf",
-    "timestamp": "2026-07-18T14:42:20.729535"
+    "timestamp": "2026-07-18T18:00:33.849734"
   },
   {
     "country": "Pakistan",
     "category": "Punjab Boards",
     "class_name": "Class 10",
     "subject": "Physics",
-    "score": 30.07,
+    "score": 1.5,
     "filename": "physics_class10.txt",
-    "timestamp": "2026-07-18T15:03:34.134170"
+    "timestamp": "2026-07-18T18:02:50.053005"
   }
 ]
