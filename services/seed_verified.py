@@ -1,11 +1,10 @@
 """
 Seed the Verified ChromaDB collection with comprehensive examination papers.
 
-Coverage:
+Coverage (Pakistan boards ONLY):
   Pakistan > Punjab Boards  > Class 9, 10, 11, 12
   Pakistan > Federal Board  > Class 9, 10, 11, 12
   Pakistan > Cambridge      > O Level, A Level
-  UK       > Cambridge      > O Level, A Level
 
 Subjects: Mathematics, Physics, Chemistry, Biology, Computer Science,
           English, Urdu, Islamiat, Pakistan Studies
