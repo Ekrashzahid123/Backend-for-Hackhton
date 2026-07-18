@@ -1200,9 +1200,30 @@ def seed_verified_store() -> None:
     from services.vector_store import verified_col, add_to_verified
 
     existing_count = verified_col.count()
+    is_contaminated = False
     if existing_count > 0:
-        print(f"[Seed] Verified store already has {existing_count} documents — skipping.")
+        # Check a sample of metadatas to see if there are any non-Pakistan countries or disallowed categories
+        res = verified_col.get(limit=100, include=["metadatas"])
+        for m in res.get("metadatas", []):
+            if m.get("country") != "Pakistan" or m.get("category") not in {"Punjab Boards", "Cambridge", "Federal Board"}:
+                is_contaminated = True
+                break
+
+    if existing_count > 0 and not is_contaminated:
+        print(f"[Seed] Verified store already has {existing_count} documents and is clean — skipping.")
         return
+
+    if is_contaminated:
+        print(f"[Seed] Verified store is contaminated with old or invalid data. Clearing and re-seeding ...")
+        # Clear collection
+        result = verified_col.get(include=[])
+        ids = result.get("ids", [])
+        if ids:
+            batch_size = 1000
+            for start in range(0, len(ids), batch_size):
+                batch = ids[start:start + batch_size]
+                verified_col.delete(ids=batch)
+            print("[Seed] Verified collection cleared.")
 
     print("[Seed] Building verified store …")
     documents = []

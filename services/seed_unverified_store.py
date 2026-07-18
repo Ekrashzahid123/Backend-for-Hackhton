@@ -988,9 +988,34 @@ def seed_unverified_store() -> None:
     from services.vector_store import unverified_col, add_to_unverified, save_unverified_paper_meta
 
     existing_count = unverified_col.count()
+    is_contaminated = False
     if existing_count > 0:
-        print(f"[Seed] Unverified store already has {existing_count} documents — skipping.")
+        # Check a sample of metadatas to see if there are any Pakistan entries
+        # or if categories are wrong (like Punjab Boards)
+        res = unverified_col.get(limit=100, include=["metadatas"])
+        for m in res.get("metadatas", []):
+            if m.get("country") == "Pakistan" or m.get("category") not in {"Board Exam", "Mid Term", "Final Term", "Quiz"}:
+                is_contaminated = True
+                break
+
+    if existing_count > 0 and not is_contaminated:
+        print(f"[Seed] Unverified store already has {existing_count} documents and is clean — skipping.")
         return
+
+    if is_contaminated:
+        print(f"[Seed] Unverified store is contaminated with old or invalid data. Clearing and re-seeding ...")
+        # Clear collection
+        result = unverified_col.get(include=[])
+        ids = result.get("ids", [])
+        if ids:
+            unverified_col.delete(ids=ids)
+        # Clear metadata JSON
+        import json
+        meta_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "unverified_meta.json")
+        if os.path.exists(meta_path):
+            with open(meta_path, "w", encoding="utf-8") as f:
+                json.dump([], f)
+            print("[Seed] Unverified metadata JSON cleared.")
 
     print("[Seed] Building unverified store with international papers …")
     documents = []

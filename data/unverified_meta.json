@@ -448,5 +448,14 @@
     "score": 75.0,
     "filename": "can_quiz_g11_bio_01.pdf",
     "timestamp": "2026-07-18T14:42:20.729535"
+  },
+  {
+    "country": "Pakistan",
+    "category": "Punjab Boards",
+    "class_name": "Class 10",
+    "subject": "Physics",
+    "score": 30.07,
+    "filename": "physics_class10.txt",
+    "timestamp": "2026-07-18T15:03:34.134170"
   }
 ]
