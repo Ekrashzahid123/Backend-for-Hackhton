@@ -1,11 +1,10 @@
 """
 Verified data routes — queries the VERIFIED ChromaDB vector store.
 
-Endpoints (names/paths unchanged):
+Endpoints:
   GET  /verified/papers              — metadata hierarchy
   POST /verified/generate-quiz       — select MCQs from verified DB
-  POST /verified/generate-paper/cambridge
-  POST /verified/generate-paper/boards
+  POST /verified/generate-paper/boards — generate full exam paper from verified DB
 """
 
 from fastapi import APIRouter, HTTPException
@@ -132,80 +131,6 @@ async def generate_quiz(req: VerifiedQuizRequest):
 
     return VerifiedQuizResponse(mcqs=mcq_items)
 
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# POST /verified/generate-paper/cambridge
-# ═══════════════════════════════════════════════════════════════════════════════
-
-@router.post("/generate-paper/cambridge", response_model=VerifiedPaperResponse)
-async def generate_paper_cambridge(req: VerifiedPaperRequest):
-    """
-    Generate a Cambridge-style exam paper from the VERIFIED vector store.
-
-    Flow:
-      1. Filter Verified DB by metadata (country, category, class, subject)
-      2. Retrieve ALL matching MCQs / Short / Long questions separately
-      3. Pass ALL to LLM — select & rank only, never invent
-    """
-    # Normalize metadata against existing values in DB
-    existing = vector_store.get_verified_field_values()
-    norm_country = ai_service.normalize_field(req.country, existing["countries"], "country") if req.country else None
-    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
-    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
-
-    # Step 1 + 2: Metadata-filtered retrieval
-    questions = vector_store.get_verified_questions_by_type(
-        country=norm_country,
-        category=req.category or "Cambridge",
-        class_name=norm_class,
-        subject=norm_subject,
-    )
-
-    # Fallback: semantic search when metadata yields nothing
-    if not any(questions.values()):
-        chunks = vector_store.query_verified(
-            query=f"{req.subject} {req.class_name}",
-            n_results=50,
-            where={"class_name": {"$eq": req.class_name}} if req.class_name else None,
-        )
-        for c in chunks:
-            qt = c.get("metadata", {}).get("question_type", "")
-            text = c["text"]
-            if qt == "mcq":
-                questions["mcqs"].append(text)
-            elif qt == "short":
-                questions["short"].append(text)
-            elif qt == "long":
-                questions["long"].append(text)
-            else:
-                questions["mcqs"].append(text)  # default
-
-    if not any(questions.values()):
-        raise HTTPException(
-            status_code=404,
-            detail="No verified data found for the given subject/class.",
-        )
-
-    # Step 3: LLM selects & ranks — Cambridge style
-    preference = req.preference or "Mixed"
-    raw = ai_service.generate_paper_from_questions(
-        mcqs=questions["mcqs"],
-        short_questions=questions["short"],
-        long_questions=questions["long"],
-        number_of_mcqs=req.mcqs,
-        number_of_short_questions=req.short_questions,
-        number_of_long_questions=req.long_questions,
-        preference=preference,
-    )
-
-    if not raw.get("mcqs") and not raw.get("short_questions") and not raw.get("long_questions"):
-        raise HTTPException(status_code=404, detail="No data available for this query.")
-
-    return VerifiedPaperResponse(
-        mcqs=[_parse_mcq(m, i) for i, m in enumerate(raw.get("mcqs", []))],
-        short_questions=[_parse_short(q, i) for i, q in enumerate(raw.get("short_questions", []))],
-        long_questions=[_parse_long(q, i) for i, q in enumerate(raw.get("long_questions", []))],
-    )
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
