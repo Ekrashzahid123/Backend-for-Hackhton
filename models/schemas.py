@@ -121,9 +121,11 @@ class VerifiedHierarchyResponse(BaseModel):
 
 class UnverifiedUploadResponse(BaseModel):
     accepted: bool
-    score: float        # 0–5 uniqueness score (0 if rejected)
+    score: float        # uniqueness score (token count or 0 if rejected)
     reason: str         # empty string when accepted
     filename: Optional[str] = None  # original filename (None if rejected before parsing)
+    unique_tokens: Optional[int] = None
+    total_questions: Optional[int] = None
 
 
 class UnverifiedClassesResponse(BaseModel):

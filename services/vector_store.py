@@ -326,40 +326,60 @@ def get_unverified_hierarchy() -> Dict[str, Any]:
     return _build_hierarchy_from_collection(unverified_col)
 
 
-def compute_similarity_score(new_documents: List[str]) -> float:
+def compute_similarity_score(new_documents: List[str]) -> tuple[int, int]:
     """
-    Compute uniqueness score in range [0, 5].
-    uniqueness_score = 5 - (average_max_similarity * 5)
-
-    Example: avg similarity 90%  → uniqueness = 0.5
-             avg similarity 25%  → uniqueness = 3.75
-    Returns 5.0 if corpus is empty (first upload = fully unique).
+    Check each document/question against both verified and unverified collections.
+    If the maximum similarity is < 75% (cosine distance > 0.25), the question is unique.
+    Each unique question gets 1 token.
+    Returns: (unique_tokens, total_questions)
     """
-    count = unverified_col.count()
-    if count == 0:
-        return 5.0
+    unverified_count = unverified_col.count()
+    verified_count = verified_col.count()
 
-    max_similarities = []
-    for doc in new_documents[:10]:  # sample up to 10 docs for speed
-        try:
-            res = unverified_col.query(
-                query_texts=[doc],
-                n_results=min(5, count),
-            )
-            distances = res.get("distances", [[]])[0]
-            if distances:
-                # cosine distance: 0=identical, 1=orthogonal → similarity = 1 - distance
-                max_sim = max(1.0 - d for d in distances)
-                max_similarities.append(max_sim)
-        except Exception:
-            pass
+    unique_tokens = 0
+    total_questions = len(new_documents)
 
-    if not max_similarities:
-        return 5.0
+    if total_questions == 0:
+        return 0, 0
 
-    avg_max_sim = sum(max_similarities) / len(max_similarities)
-    score = (1.0 - avg_max_sim) * 5.0
-    return round(max(0.0, min(5.0, score)), 2)
+    for doc in new_documents:
+        max_sim = 0.0
+
+        # Query unverified collection
+        if unverified_count > 0:
+            try:
+                res = unverified_col.query(
+                    query_texts=[doc],
+                    n_results=min(5, unverified_count),
+                )
+                distances = res.get("distances", [[]])[0]
+                if distances:
+                    sim = max(1.0 - d for d in distances)
+                    if sim > max_sim:
+                        max_sim = sim
+            except Exception as e:
+                print(f"[VectorStore] Error querying unverified collection: {e}")
+
+        # Query verified collection
+        if verified_count > 0:
+            try:
+                res = verified_col.query(
+                    query_texts=[doc],
+                    n_results=min(5, verified_count),
+                )
+                distances = res.get("distances", [[]])[0]
+                if distances:
+                    sim = max(1.0 - d for d in distances)
+                    if sim > max_sim:
+                        max_sim = sim
+            except Exception as e:
+                print(f"[VectorStore] Error querying verified collection: {e}")
+
+        # A question is unique if similarity < 75% (0.75)
+        if max_sim < 0.75:
+            unique_tokens += 1
+
+    return unique_tokens, total_questions
 
 
 
@@ -392,28 +412,32 @@ def save_unverified_paper_meta(
 
 
 def get_existing_field_values() -> Dict[str, List[str]]:
-    """Return existing distinct countries, classes, subjects for AI normalisation."""
+    """Return existing distinct countries, classes, subjects, categories for AI normalisation."""
     meta = _load_meta()
-    countries = list({e.get("country", "")    for e in meta if e.get("country")})
-    classes   = list({e.get("class_name", "") for e in meta if e.get("class_name")})
-    subjects  = list({e.get("subject", "")    for e in meta if e.get("subject")})
-    return {"countries": countries, "classes": classes, "subjects": subjects}
+    countries  = list({e.get("country",    "") for e in meta if e.get("country")})
+    classes    = list({e.get("class_name", "") for e in meta if e.get("class_name")})
+    subjects   = list({e.get("subject",    "") for e in meta if e.get("subject")})
+    categories = list({e.get("category",   "") for e in meta if e.get("category")})
+    return {"countries": countries, "classes": classes, "subjects": subjects, "categories": categories}
 
 
 def get_verified_field_values() -> Dict[str, List[str]]:
-    """Return existing distinct countries, classes, subjects in verified store."""
+    """Return existing distinct countries, classes, subjects, categories in verified store."""
     hierarchy = get_verified_hierarchy()
-    countries = list(hierarchy.keys())
-    classes = set()
-    subjects = set()
+    countries  = list(hierarchy.keys())
+    classes    = set()
+    subjects   = set()
+    categories = set()
     for cats in hierarchy.values():
-        for cls_dict in cats.values():
+        for cat_name, cls_dict in cats.items():
+            categories.add(cat_name)
             for cls_name, subs in cls_dict.items():
                 classes.add(cls_name)
                 for s in subs:
                     subjects.add(s)
     return {
-        "countries": countries,
-        "classes": list(classes),
-        "subjects": list(subjects)
+        "countries":  countries,
+        "classes":    list(classes),
+        "subjects":   list(subjects),
+        "categories": list(categories),
     }

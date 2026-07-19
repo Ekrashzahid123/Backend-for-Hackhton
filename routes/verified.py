@@ -2,7 +2,7 @@
 Verified data routes — queries the VERIFIED ChromaDB vector store.
 
 Endpoints:
-  GET  /verified/papers              — metadata hierarchy
+  GET  /verified/papers              — metadata hierarchy (Cambridge excluded)
   POST /verified/generate-quiz       — select MCQs from verified DB
   POST /verified/generate-paper/boards — generate full exam paper from verified DB
 """
@@ -56,14 +56,23 @@ def _parse_long(raw: dict, idx: int) -> LongQuestion:
 @router.get("/papers", response_model=VerifiedHierarchyResponse)
 async def list_verified_papers():
     """
-    Returns the full metadata hierarchy from the Verified Vector DB.
+    Returns the metadata hierarchy from the Verified Vector DB.
     Structure: Country → Categories → Classes → Subjects
+    Cambridge is excluded — pass category='Cambridge' to /generate-paper/boards.
     No question content is returned.
     """
     hierarchy = vector_store.get_verified_hierarchy()
     if not hierarchy:
         return VerifiedHierarchyResponse(hierarchy={})
-    return VerifiedHierarchyResponse(hierarchy=hierarchy)
+
+    # Strip Cambridge category from every country in the hierarchy
+    filtered: dict = {}
+    for country, categories in hierarchy.items():
+        cats = {cat: classes for cat, classes in categories.items() if cat != "Cambridge"}
+        if cats:
+            filtered[country] = cats
+
+    return VerifiedHierarchyResponse(hierarchy=filtered)
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -132,7 +141,6 @@ async def generate_quiz(req: VerifiedQuizRequest):
     return VerifiedQuizResponse(mcqs=mcq_items)
 
 
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # POST /verified/generate-paper/boards
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -140,7 +148,9 @@ async def generate_quiz(req: VerifiedQuizRequest):
 @router.post("/generate-paper/boards", response_model=VerifiedPaperResponse)
 async def generate_paper_boards(req: VerifiedPaperRequest):
     """
-    Generate a Pakistani Boards-style exam paper from the VERIFIED vector store.
+    Generate an exam paper from the VERIFIED vector store.
+    Handles all board types (Punjab Boards, Federal Board, Cambridge, etc.)
+    by filtering on the category field.
 
     Flow:
       1. Filter Verified DB by metadata (country, category, class, subject)
@@ -149,14 +159,15 @@ async def generate_paper_boards(req: VerifiedPaperRequest):
     """
     # Normalize metadata against existing values in DB
     existing = vector_store.get_verified_field_values()
-    norm_country = ai_service.normalize_field(req.country or "Pakistan", existing["countries"], "country")
-    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
-    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
+    norm_country  = ai_service.normalize_field(req.country or "Pakistan", existing["countries"],  "country")
+    norm_class    = ai_service.normalize_field(req.class_name, existing["classes"],    "class/level") if req.class_name else None
+    norm_subject  = ai_service.normalize_field(req.subject,    existing["subjects"],   "subject")    if req.subject    else None
+    norm_category = ai_service.normalize_field(req.category,   existing["categories"], "category")   if req.category   else None
 
     # Step 1 + 2: Metadata-filtered retrieval
     questions = vector_store.get_verified_questions_by_type(
         country=norm_country,
-        category=req.category,
+        category=norm_category,
         class_name=norm_class,
         subject=norm_subject,
     )
@@ -186,7 +197,7 @@ async def generate_paper_boards(req: VerifiedPaperRequest):
             detail="No verified data found for the given subject/class.",
         )
 
-    # Step 3: LLM selects & ranks — Boards style
+    # Step 3: LLM selects & ranks
     preference = req.preference or "Mixed"
     raw = ai_service.generate_paper_from_questions(
         mcqs=questions["mcqs"],

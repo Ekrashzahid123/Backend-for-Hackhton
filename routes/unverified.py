@@ -210,19 +210,21 @@ async def upload_paper(
             metas.append({**base_meta, "question_type": "long"})
 
     # ── Step 5: Uniqueness score ───────────────────────────────────────────────
-    score = vector_store.compute_similarity_score(docs)
+    unique_tokens, total_questions = vector_store.compute_similarity_score(docs)
+    score = round((unique_tokens / total_questions) * 10.0, 2) if total_questions > 0 else 10.0
 
     # ── Step 6: Decision ───────────────────────────────────────────────────────
-    if score < _UNIQUENESS_THRESHOLD:
+    if unique_tokens < 1:
         return UnverifiedUploadResponse(
             accepted=False,
-            score=round(score, 2),
+            score=score,
             reason=(
-                f"Paper is too similar to existing content "
-                f"(uniqueness score: {score:.2f}/5). "
-                f"Minimum required uniqueness: {_UNIQUENESS_THRESHOLD}/5."
+                f"Paper is too similar to existing content. "
+                f"All {total_questions} questions have high similarity (>= 75%) with existing papers."
             ),
             filename=filename,
+            unique_tokens=unique_tokens,
+            total_questions=total_questions,
         )
 
     # ── Step 7: Store directly in Unverified Vector DB ────────────────────────
@@ -241,9 +243,11 @@ async def upload_paper(
 
     return UnverifiedUploadResponse(
         accepted=True,
-        score=round(score, 2),
+        score=score,
         reason="",
         filename=filename,
+        unique_tokens=unique_tokens,
+        total_questions=total_questions,
     )
 
 
@@ -279,14 +283,15 @@ async def generate_paper(req: UnverifiedPaperRequest):
     """
     # Normalize metadata against existing values in DB
     existing = vector_store.get_existing_field_values()
-    norm_country = ai_service.normalize_field(req.country, existing["countries"], "country") if req.country else None
-    norm_class = ai_service.normalize_field(req.class_name, existing["classes"], "class/level") if req.class_name else None
-    norm_subject = ai_service.normalize_field(req.subject, existing["subjects"], "subject") if req.subject else None
+    norm_country   = ai_service.normalize_field(req.country,    existing["countries"],  "country")    if req.country    else None
+    norm_class     = ai_service.normalize_field(req.class_name, existing["classes"],    "class/level") if req.class_name else None
+    norm_subject   = ai_service.normalize_field(req.subject,    existing["subjects"],   "subject")    if req.subject    else None
+    norm_category  = ai_service.normalize_field(req.category,   existing["categories"], "category")   if req.category   else None
 
     # Step 1 + 2: Metadata-filtered retrieval
     questions = vector_store.get_unverified_questions_by_type(
         country=norm_country,
-        category=req.category,
+        category=norm_category,
         class_name=norm_class,
         subject=norm_subject,
     )
