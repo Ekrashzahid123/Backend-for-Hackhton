@@ -5,7 +5,7 @@ import threading
 
 from database.database import Base, engine
 from routes import upload, generate, search
-from routes import verified, unverified
+from routes import verified, unverified, chatbot
 
 
 def _seed_in_background():
@@ -67,6 +67,7 @@ app.include_router(search.router,   prefix="/api", tags=["legacy"])
 # New verified & unverified routes
 app.include_router(verified.router)
 app.include_router(unverified.router)
+app.include_router(chatbot.router, prefix="/api")
 
 
 @app.get("/", tags=["health"])

@@ -603,3 +603,93 @@ Return ONLY a JSON object:
     except Exception as e:
         print(f"[AI] normalize_field error: {e}")
         return value.strip().title()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# CHATBOT ENDPOINT FOR CUSTOMER QUERY HANDLING
+# ═══════════════════════════════════════════════════════════════════════════════
+
+CHATBOT_SYSTEM_PROMPT = """You are a helpful customer support assistant for the Intelligent Exam Paper Generator system.
+
+Your job is to assist customers with queries related ONLY to:
+1. How to generate exam papers or quizzes using the system.
+2. How the system works (e.g. upload pipeline, verification, uniqueness score, verified/unverified stores).
+3. Any system-related or educational topics (for example: academic concepts, syllabus details, explaining subject topics like Physics, Chemistry, Mathematics, etc.).
+
+CRITICAL RULES:
+- If the user's query is NOT related to the system, how it works, or educational/academic topics, you must politely decline to answer. In this case, respond exactly with the following template message:
+  "I'm sorry, but I can only assist you with queries related to the Intelligent Exam Paper Generator system or educational topics. Please let me know how I can help you with these!"
+- Keep your answers concise, accurate, and professional.
+- Do not answer generic queries unrelated to education or this system (e.g. recipes, lifestyle, sports, coding unrelated to this system, or general off-topic conversation).
+- If the user greets you (e.g., "hello", "hi"), you can greet them back and ask how you can help them with the system or education.
+"""
+
+def retrieve_system_docs(message: str) -> str:
+    """
+    Retrieve the most relevant system documentation text from data/system_documentation.json
+    using cosine similarity on embeddings.
+    """
+    import numpy as np
+    from chromadb.utils import embedding_functions
+    
+    _DOCS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "system_documentation.json")
+    if not os.path.exists(_DOCS_PATH):
+        return ""
+
+    try:
+        with open(_DOCS_PATH, "r", encoding="utf-8") as f:
+            docs = json.load(f)
+            
+        if not docs:
+            return ""
+            
+        # Get query embedding
+        default_ef = embedding_functions.DefaultEmbeddingFunction()
+        query_emb = np.array(default_ef([message])[0])
+        
+        best_score = -1.0
+        best_text = ""
+        
+        for d in docs:
+            doc_emb = np.array(d["embedding"])
+            # dot product for normalized embeddings
+            score = np.dot(query_emb, doc_emb)
+            if score > best_score:
+                best_score = score
+                best_text = d["text"]
+                
+        # If similarity is reasonably relevant, return the text
+        return best_text if best_score > 0.3 else ""
+    except Exception as e:
+        print(f"[AI] retrieve_system_docs error: {e}")
+        return ""
+
+def handle_chatbot_query(message: str) -> str:
+    """
+    Handle chatbot queries, restricting responses to system-related or educational topics,
+    using retrieved system documentation context where applicable.
+    """
+    if not _client:
+        return "I'm sorry, but I can only assist you with queries related to the Intelligent Exam Paper Generator system or educational topics. Please let me know how I can help you with these!"
+
+    # Retrieve context from embedded system documentation
+    system_context = retrieve_system_docs(message)
+    context_str = f"\nRELEVANT SYSTEM DOCUMENTATION CONTEXT:\n{system_context}\n" if system_context else ""
+
+    prompt = f"""System Instructions:
+{CHATBOT_SYSTEM_PROMPT}
+{context_str}
+User Message:
+{message}
+
+Your Response:"""
+
+    try:
+        response = _client.chat.complete(
+            model=_MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"[AI] handle_chatbot_query error: {e}")
+        return "I'm sorry, I am currently unable to process your request. Please try again later."
