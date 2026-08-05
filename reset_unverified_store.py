@@ -4,7 +4,7 @@ unverified_meta.json file so the new international seed data will be
 loaded on the next application startup.
 
 Usage:
-    python reset_unverified_store.py
+    python reset_unverified_store.py Ekrash zahid 
 """
 import os
 import sys
