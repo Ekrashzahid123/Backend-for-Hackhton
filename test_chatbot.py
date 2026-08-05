@@ -24,3 +24,6 @@ if __name__ == "__main__":
     
     # 3. Off-topic query
     test_query("Tell me a recipe for baking a chocolate cake.")
+
+    # 4. System Query
+    test_query("What is NEXTQ. Who is it designed by?")
